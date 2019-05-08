@@ -1,0 +1,205 @@
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <title>系统管理平台</title>
+    <link rel="stylesheet" type="text/css" href="../common/css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../common/plugins/poshytip/style.css" />
+    <link rel="stylesheet" type="text/css" href="../common/css/table.css" />
+    <script type="text/javascript" src="../common/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../common/plugins/lhgdialog/lhgdialog.min.js?skin=discuz"></script>
+    <script type="text/javascript" src="../common/plugins/poshytip/jquery.poshytip.min.js"></script>
+    <script type="text/javascript" src="../common/plugins/validationPoshytip/validation.js"></script>
+    <script type="text/javascript" src="../common/plugins/validationPoshytip/validationConstants.js"></script>
+    <script type="text/javascript" src="../common/js/common.js">
+    </script><script type="text/javascript" src="../common/plugins/dateInput/jquery.dateInput.js"></script>
+</head>
+<style>
+    .jSICont ul{
+        width:1000px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        align-items: center;
+    }
+    .jSICont ul li{
+        width:33.3%;
+        display: flex;
+        align-items: center;
+    }
+    .jSICont ul li div{
+        width:220px;
+        text-align: right;
+    }
+    .jSICont ul li input{
+        width:300px;
+    }
+    .jSICont ul li select{
+        width:300px;
+    }
+    .btn{
+        width:1000px;
+        height:100px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .btn input{
+        outline: none;
+    }
+</style>
+
+<body>
+<div class="jSeveInf">
+    <div class="jSICont">
+        <ul>
+            <li>
+                <div>客户姓名：</div>
+                <input optional="true" id="name" type="text" name="name" placeholder="" class="input_Style" />
+            </li>
+            <li>
+                <div>证件号码：</div>
+                <input optional="true" id="id_number" type="text" name="id_number" placeholder="" class="input_Style" />
+            </li>
+            <li>
+                <div>性别：</div>
+                <input optional="true" id="gender" type="text" name="gender" placeholder="" class="input_Style" />
+            </li>
+            <li>
+                <div>最近办理时间：</div>
+                <input optional="true" id="last_process_time" type="text" name="last_process_time" placeholder="" class="input_Style" />
+            </li>
+            <li>
+                <div>手机号码：</div>
+                <input optional="true" id="mobile_number" type="text" name="mobile_number" placeholder="" class="input_Style" />
+            </li>
+            <li>
+                <div>还款账户绑定：</div>
+                <select id="repayment_type">
+                    <option value="01">约定还款</option>
+                    <option value="02">非约定还款</option>
+                </select>
+            </li>
+            <li>
+                <div>通讯地址：</div>
+                <input optional="true" id="address" type="text" name="address" placeholder="" class="input_Style" />
+            </li>
+            <li>
+                <div>家庭电话：</div>
+                <input optional="true" id="home_tel" type="text" name="home_tel" placeholder="" class="input_Style" />
+            </li>
+            <li>
+                <div>工作单位：</div>
+                <input optional="true" id="company" type="text" name="company" placeholder="" class="input_Style" />
+            </li>
+            <li>
+                <div>当前临时额度：</div>
+                <input optional="true" id="temp_credit_limit" type="text" name="temp_credit_limit" placeholder="" class="input_Style" />
+            </li>
+
+            <li>
+                <div>响应等级：</div>
+                <input optional="true" id="response_level" type="text" name="response_level" placeholder="" class="input_Style" />
+            </li>
+            <li>
+                <div>账单余额：</div>
+                <input optional="true" id="bill_amount" type="text" name="bill_amount" placeholder="" class="input_Style" />
+            </li>
+            <li>
+                <div>卡号：</div>
+                <input optional="true" id="card_number" type="text" name="card_number" placeholder="" class="input_Style" />
+            </li>
+            <li>
+                <div>产品类型：</div>
+                <input optional="true" id="product_type" type="text" name="product_type" placeholder="" class="input_Style" />
+            </li>
+            <li>
+                <div>卡片信用额度：</div>
+                <input optional="true" id="credit_limit" type="text" name="credit_limit" placeholder="" class="input_Style" />
+            </li>
+            <li>
+                <div>账单日：</div>
+                <input optional="true" id="bill_date" type="text" name="bill_date" placeholder="" class="input_Style" />
+            </li>
+            <li>
+                <div>最后还款日：</div>
+                <input optional="true" id="repayment_date" type="text" name="repayment_date" placeholder="" class="input_Style" />
+            </li>
+            <li>
+                <div>可办理金额：</div>
+                <input optional="true" id="accessible_amount" type="text" name="accessible_amount" placeholder="" class="input_Style" />
+            </li>
+            <li style="margin-top:18px; width: 1000px;">
+                <div style="width: 120px;">备注：</div>
+                <textarea style="width: 900px;" id="remark" name="remark" rows="4" cols="1000" placeholder="" optional="true"></textarea>
+            </li>
+        </ul>
+    </div>
+    <div class="btn">
+        <input type="button" id="enter" value="保存" class="jChooseFile" />
+        <input type="button" id="reset" value="重置" class="jChooseFile" />
+    </div>
+</div>
+</body>
+<script>
+$(function () {
+    $("#last_process_time").date_input();
+    $("#bill_date").date_input();
+    $("#repayment_date").date_input();
+
+    $("#enter").click(function () {
+        AjaxPost("/api/toms/task/create",function(data){
+            if(data.ret_code==="00000000"){
+               alert(data.ret_msg);
+            }
+        },{
+            name: document.getElementById('name').value||"",
+            id_number : document.getElementById('id_number').value||"" ,
+            gender : document.getElementById("gender").value||"",
+            last_process_time : document.getElementById("last_process_time").value||"",
+            mobile_number : document.getElementById("mobile_number").value||"",
+            repayment_type : document.getElementById("repayment_type").value||"",
+            address : document.getElementById("address").value||"",
+            home_tel : document.getElementById("home_tel").value||"",
+            company : document.getElementById("company").value||"",
+            temp_credit_limit : document.getElementById("temp_credit_limit").value||"",
+            response_level : document.getElementById("response_level").value||"",
+            bill_amount : document.getElementById("bill_amount").value||"",
+            card_number : document.getElementById("card_number").value||"",
+            product_type : document.getElementById("product_type").value||"",
+            credit_limit : document.getElementById("credit_limit").value||"",
+            bill_date : document.getElementById("bill_date").value||"",
+            repayment_date : document.getElementById("repayment_date").value||"",
+            accessible_amount : document.getElementById("accessible_amount").value||"",
+            remark : document.getElementById("remark").value||"",
+        })
+    })
+
+    $("#reset").click(
+        function () {
+            document.getElementById('name').value="",
+                document.getElementById('id_number').value="" ,
+                document.getElementById("gender").value="" ,
+                document.getElementById("last_process_time").value="" ,
+                document.getElementById("mobile_number").value="",
+                document.getElementById("repayment_type").value="",
+                document.getElementById("address").value="",
+                document.getElementById("home_tel").value="",
+                document.getElementById("company").value="",
+                document.getElementById("temp_credit_limit").value="",
+                document.getElementById("response_level").value="",
+                document.getElementById("bill_amount").value="",
+                document.getElementById("card_number").value="",
+                document.getElementById("product_type").value="",
+                document.getElementById("credit_limit").value="",
+                document.getElementById("bill_date").value="",
+                document.getElementById("repayment_date").value="",
+                document.getElementById("accessible_amount").value="",
+                document.getElementById("remark").value=""
+        }
+    )
+})
+
+</script>
+</html>

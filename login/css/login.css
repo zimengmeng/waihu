@@ -1,0 +1,34 @@
+@CHARSET "UTF-8";
+
+/* login start */
+.jLogin{width:100%;height:615px;margin:0 auto;}
+.jLogin .jCenterBox{height:449px;padding:80px 10% 0;background:url("../../common/images/centerbg.jpg") no-repeat center center;}
+.jLogin .jCenterBox .jCenLt{float:left;width:466px;padding-top:70px;}
+.jLogin .jCenterBox .jCenLt h3{text-align:center;margin:0;color:#fff;font-size:36px;}
+.jLogin .jCenterBox .jLoginBox{width:388px;height:315px;padding:30px 36px 0;float:right; background-color:#FFF; -webkit-border-radius:5px; -moz-border-radius: 5px; border-radius:5px; filter:alpha(opacity=98); -moz-opacity:0.98; -khtml-opacity: 0.98; opacity:0.98;}
+.jLogin .jCenterBox .jLoginBox h3{color:#2b2b2b;font-size:24px;margin-bottom:10px;}
+.jLogin .jCenterBox .jLoginBox input{background:0;border:0;}
+.jLogin .jCenterBox .jLoginBox .jInputBox_01,.jLogin .jCenterBox .jLoginBox .jInputBox_02,.jLogin .jCenterBox .jLoginBox .jInputBox_03{height:53px;border:1px solid #eaeaea;}
+.jLogin .jCenterBox .jLoginBox .jInputBox_01 span,.jLogin .jCenterBox .jLoginBox .jInputBox_02 span,.jLogin .jCenterBox .jLoginBox .jInputBox_03 span{display:block;width:58px;height:53px;float:left;}
+.jLogin .jCenterBox .jLoginBox .jInputBox_01 span{background:url("../../common/images/texticon.png") no-repeat center center;}
+.jLogin .jCenterBox .jLoginBox .jInputBox_02 span{background:url("../../common/images/pwdicon.png") no-repeat center center;}
+.jLogin .jCenterBox .jLoginBox .jInputBox_03 span{background:url("../../common/images/imagecodeicon.png") no-repeat center center;}
+.jLogin .jCenterBox .jLoginBox .jInputBox_01 input{display:block;width:320px;height:53px;line-height:53px;font-size:15px;/* color:#ccc; */}
+.jLogin .jCenterBox .jLoginBox .jInputBox_02 input{display:block;width:320px;height:53px;line-height:53px;font-size:15px;/* color:#999; */}
+.jLogin .jCenterBox .jLoginBox .jInputBox_03 input{display:block;width:183px;height:53px;line-height:53px;font-size:15px;float:left;}
+.jLogin .jCenterBox .jLoginBox .jInputBox_02{border-top:none;}
+.jLogin .jCenterBox .jLoginBox .jInputBox_03{border-top:none;}
+.jLogin .jCenterBox .jLoginBox .jOperate{padding-top:15px;height:15px;margin-bottom:15px;font-size:15px;}
+.jLogin .jCenterBox .jLoginBox .jOperate a.jForgotBtn{float:right;color:#316ddc;}
+.jLogin .jCenterBox .jLoginBox .jOperate a.jRemMe{background:url("../../common/images/checkboxbg02.png") no-repeat left center;}
+.jLogin .jCenterBox .jLoginBox .jOperate .jRememberbtn{float:left;width:100px;padding-left:25px;color:#2b2b2b;background:url("../../common/images/checkboxbg01.png") no-repeat left center;}
+.jLogin .jCenterBox .jLoginBox .jLoginBtn{display:block;width:133px;height:39px;text-align:center;line-height:38px;color:#fff;font-size:15px;background:url("../../common/images/loginbtn.png") no-repeat center center;}
+.jLogin .jCenterBox .jLoginBox .jLoginBtn:hover{background:url("../../common/images/loginbtn01.png") no-repeat center center;}
+.jLogin .jNotice{height:53px;padding:13px 0 0;}
+.jLogin .jNotice .jNoticeCont{height:38px;border:1px solid #eaeaea;line-height:36px;color:#2b2b2b;font-size:14px;}
+.jLogin .jNotice .jNoticeCont .jNoticeicon{display:block;width:50px;height:38px;float:left;text-align:right;margin-left:18px;background:url("../../common/images/noticeicon.png") no-repeat left center;}
+.jLogin .jNotice .jNoticeCont ul{float:left;margin:0;list-style-type:none;padding-left:18px;}
+.jLogin .jNotice .jNoticeCont ul li{float:left;margin:0;min-width:240px;*width:295px;height:38px;padding-left:16px;margin-right:8px;background:url("../../common/images/noticepstyle.png") no-repeat left center;}
+.jLogin .jNotice .jNoticeCont ul li span{display:block;width:40px;height:38px;float:right;background:url("../../common/images/NEWicon.png") no-repeat center center;}
+.jLogin .jNotice .jNoticeCont .jCheckBtn{float:right;width:69px;color:#2b2b2b;margin-right:15px;background:url("../../common/images/checkallbtn.png") no-repeat right center;}
+/* login end */

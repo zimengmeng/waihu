@@ -1,0 +1,306 @@
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <title>系统管理平台</title>
+    <link rel="stylesheet" type="text/css" href="../common/css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../common/plugins/poshytip/style.css" />
+    <link rel="stylesheet" type="text/css" href="../common/css/table.css" />
+    <style>
+        .jOperateBox{
+            display: flex;
+            justify-content: space-between;
+        }
+        .jOperateBox .btnBox{
+            text-align: center;
+            float: left;
+            margin-left: 20px;
+        }
+        .jOperateBox .btnBox:after{
+            content: '';
+            display: block;
+            clear: both;
+        }
+        .jOperateBox .btnBox input{
+            width: 90px;
+        }
+        .jOperateBox .btnBox .jChooseFile:focus{
+            outline: none;
+        }
+        .jOperateBox .btnBox .text{
+            width:200px;
+        }
+        .mark{
+            width:100%;
+            height:100%;
+            position: absolute;
+            top:0;
+            left:0;
+            z-index: 10;
+            display: none;
+        }
+        .mark .count{
+            width:500px;
+            height:600px;
+            border:10px solid #fff;
+            box-sizing: border-box;
+            padding:0 20px;
+            background:#eaeaea;
+            margin:0 auto;
+        }
+        .mark .count p{
+            width:100%;
+            height:30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top:10px;
+        }
+        .mark span{
+            cursor: pointer;
+        }
+        .mark .close{
+            display: inline-block;
+            width: 20px;
+            height:20px;
+            background: url("../common/images/closebtn.png") no-repeat center;
+        }
+        .mark .jOperateBox .conditionBox{
+            width:100%;
+        }
+        .mark .mySeacherBox{
+            margin-top:5px;
+        }
+
+        .mark .mySeacherBox label{
+            display: inline-block;
+            width: 100px;
+            text-align: right;
+        }
+        .mark .mySeacherBox select{
+            width:calc(100% - 110px);
+        }
+        .mark .mySeacherBox input{
+            width:calc(100% - 110px);height: 28px;
+        }
+        .jSMBTit ul li.jPageBtn{width: 40px;}
+        #pageNum {width: 20px;height:18px;line-height: 18px;margin: 0 5px;}
+        #pageNumJump{width: 100px;}
+    </style>
+    <script type="text/javascript" src="../common/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../common/plugins/lhgdialog/lhgdialog.min.js?skin=discuz"></script>
+    <script type="text/javascript" src="../common/plugins/dateInput/jquery.dateInput.js"></script>
+    <script type="text/javascript" src="../common/plugins/poshytip/jquery.poshytip.min.js"></script>
+    <script type="text/javascript" src="../common/plugins/validationPoshytip/validation.js"></script>
+    <script type="text/javascript" src="../common/plugins/validationPoshytip/validationConstants.js"></script>
+    <script type="text/javascript" src="../common/js/common.js"></script>
+    <script type="text/javascript" src="../common/js/cn.js"></script>
+
+    <script>
+        function pageLoadData() {
+//             queryAllApplication();
+             query();
+        }
+        var selectedApplicationId = "";
+        var defaultListPageSize = 10
+        var pageNum = null;
+        function queryAllApplication() {
+            var requestObj = {
+                page_no:1,
+                page_size:0
+            };
+            AjaxPost("/api/toms/operator/list", function(data) {
+                var resultList = data.result.result_list;
+                pageNum = data.result.page_no;
+                var selectContent = "<option value=\"\">全部</option>";
+                for (var i = 0; i < resultList.length; i ++) {
+                    var application = resultList[i];
+                    selectContent += "<option value=\"" + application.application_id + "\">" + application.name + "</option>";
+                }
+                document.getElementById("selectApplication").innerHTML = selectContent;
+            }, requestObj);
+        }
+
+        function query(pageNo, pageSize) {
+            var requestObj = {
+                "page_no": pageNo ? pageNo : 1,
+                "page_size": pageSize ? pageSize : 10,
+            };
+            if (selectedApplicationId) {
+                requestObj.application_id = selectedApplicationId;
+            }
+            AjaxPost("/api/toms/operator/list", function(data) {
+                pageNum = data.result.page_no
+                document.getElementById("total_record_number").innerHTML = data.result.total_record_number;
+                document.getElementById("page_no").innerHTML = data.result.page_no;
+                document.getElementById("total_page_number").innerHTML =  data.result.total_page_number;
+                var resultList = data.result.result_list;
+                if (data.result.has_previous_page) {
+                    $("#previous_page").attr("class", "jPrevBtn");
+                    $("#previous_page").attr("href", "javascript:query("+ data.result.pre_page_no + ", " + defaultListPageSize + ");");
+                } else {
+                    $("#previous_page").attr("class", "jPrevend");
+                    $("#previous_page").attr("href", "javascript:;");
+                }
+                if (data.result.has_next_page) {
+                    $("#next_page").attr("class", "jNextBtn");
+                    $("#next_page").attr("href", "javascript:query("+ data.result.next_page_no + ", " + defaultListPageSize + ");");
+                } else {
+                    $("#next_page").attr("class", "jNextend");
+                    $("#next_page").attr("href", "javascript:;");
+                }
+                var tableContent = "<ul>";
+                for (var i = 0; i < resultList.length; i ++) {
+                    var application = resultList[i];
+                    tableContent += "<li><ul>";
+                    tableContent += "<li class=\"showText\" style=\"width:40px;\">" + application.operator_id + "</li>";
+                    tableContent += "<li class=\"showText\" style=\"width:16px;\"><input optional type='checkbox' class='check' id='check' value='" + application.operator_id + "'></li>";
+                    tableContent += "<li class=\"showText\" style=\"width:60px;\">" + application.name + "</li>";
+                    tableContent += "<li class=\"showText\" style=\"width:60px;\">" + application.name + "</li>";
+                    tableContent += "<li class=\"showText\" style=\"width:100px;\">" + application.user_name + "</li>";
+                    tableContent += "<li class=\"showText\" style=\"width:100px;\">" + types[application.operator_type] + "</li>";
+                    tableContent += "<li class=\"showText\" style=\"width:60px;\">" + application.branch_name + "</li>";
+                    tableContent += "<li class=\"showText\" style=\"width:70px;\">" + gender[application.gender]+ "</li>";
+                    tableContent += "<li class=\"showText\" style=\"width:70px;\">" + statuss[application.status] + "</li>";
+                    tableContent += "<li class=\"showText\" style=\"width:80px;\">" + application.operator_code + "</li>";
+                    tableContent += "<li class=\"showText\" style=\"width:60px;\">" + (isNullOrEmpty(application.position)?"-":application.position) + "</li>";
+                    tableContent += "<li class=\"showText\" style=\"width:60px;\">" + (isNullOrEmpty(application.mobile_number)?"-":application.mobile_number)  + "</li>";
+                    tableContent += "<li class=\"showText\" style=\"width:70px;\">" + (isNullOrEmpty(application.telephone)?"-":application.telephone)  + "</li>";
+                    tableContent += "<li class=\"showText\" style=\"width:60px;\">" + (isNullOrEmpty(application.email)?"-":application.email) + "</li>";
+                    tableContent += "<li class=\"showText\" style=\"width:60px;\">" + (isNullOrEmpty(application.remark)?"-":application.remark)  + "</li>";
+                    tableContent += "</li></ul>";
+                }
+                tableContent += "</ul>";
+                document.getElementById("table_content_area").innerHTML = tableContent;
+                adapt_iframeHeight();
+                $("#allCheck").click(function() {
+                    $("#table_content_area .check").prop("checked",$("#allCheck").prop("checked"));
+                })
+                $(".check").click(function() {
+                    var status = true
+                    if (!this.checked) {
+                        $("#allCheck").attr('checked',false)
+                    }
+                    $(".check").each(function () {
+                        if (!this.checked) {
+                            status = false
+                        }
+                    })
+                    if(status) {
+                        $("#allCheck").prop("checked",true)
+                    }
+                })
+                    //删除
+                $('#delete').click(function () {
+                    var arr=[];
+                    var obj={"operator_ids":arr};
+                    $('.check').each(function () {
+                        if(this.checked){
+                            arr.push(this.value)
+                        }
+                    })
+                    AjaxPost("/api/toms/operator/delete",function(obj){
+                        alert("删除成功！")
+                        location.reload();
+                    }, obj)
+                })
+            }, requestObj);
+        }
+    </script>
+</head>
+
+<body onload="pageLoadData();">
+<div class="jOperateBox">
+        <div class="btnBox">
+            <input id="add" type="button" value="新增" class="jChooseFile" />
+            <!--<input type="button" value="修改" class="jChooseFile" />-->
+            <input id="delete" type="button" value="删除" class="jChooseFile" />
+        </div>
+
+        <!--<div class="btnBox">-->
+            <!--<input class="text" optional="true"  type="text" name="" placeholder="请输入人员名称" />-->
+            <!--<input type="button" value="查询" class="jChooseFile" />-->
+        <!--</div>-->
+</div>
+<div class="table_header_area">
+    <ul class="myTable">
+        <li style="width:40px;">No</li>
+        <li style="width:16px;"><input type="checkbox" id="allCheck"></li>
+        <li style="width:60px;">授权</li>
+        <li style="width:60px;">姓名</li>
+        <li style="width:100px;">登录账户</li>
+        <li style="width:100px;">人员类型</li>
+        <li style="width:60px;">所属部门</li>
+        <li style="width:70px;">性别</li>
+        <li style="width:70px;">人员状态</li>
+        <li style="width:80px;">人员编码</li>
+        <li style="width:60px;">职务</li>
+        <li style="width:60px;">手机</li>
+        <li style="width:70px;">座机</li>
+        <li style="width:60px;">邮箱</li>
+        <li style="width:60px;">备注</li>
+    </ul>
+</div>
+<div class="table_content_area" id="table_content_area"></div>
+<div class="jSMBTit">
+    <!-- 全选 添加类名 控制样式jTitSelectBox -->
+    <!-- <span class="jSelectBox jTitSelectBox"><a class="jSelectedno" href="javascript:;"></a></span> -->
+    <ul style="padding-left:20px;">
+        <!-- <li class="jAllPitch">全选</li> -->
+        <li>共计<span id="total_record_number"></span></span>条记录</li>
+        <li><span id="page_no"></span>/<span id="total_page_number"></span></li>
+        <li class="jPageBtn">
+            <a href="javascript:;" id="previous_page" class="jPrevend"></a>
+            <a href="javascript:;" id="next_page" class="jNextend"></a>
+        </li>
+        <li class="jPageInput">
+            跳转至
+            <input type="text" id="pageNum" optional="true">
+            <input type="button" value="跳转" id="pageNumJump" class="jChooseFile">
+        </li>
+    </ul>
+</div>
+</body>
+<script>
+    $(function(){
+        var pageJumpInput = document.getElementById('pageNum')
+        var pageJumpBtn = document.getElementById('pageNumJump')
+        pageJumpBtn.onclick = pageJumpInInput
+
+        $(".dateInput").date_input();
+        $(".jOperateBox .btnBox #add").click(function(){
+            $.dialog({
+                id:'sportdg',
+                content:'url:../personnel/mark.html',
+                width:500,
+                title:'新增人员',
+                button: [
+                {
+                    name: '关闭'
+                },
+                    {
+                        name:'保存',
+                        callback :function (){
+                            $.dialog.list['sportdg'].content.setSendData(add)
+                        }
+                    }
+            ]});
+        })
+        function add(data) {
+            AjaxPost("/api/toms/operator/create",function(data){
+                query(pageNum)
+            }, data)
+        }
+        function pageJumpInInput() {
+            var total_page_number = document.getElementById('total_page_number').innerHTML
+            var pageNum = pageJumpInput.value
+            if (0 < parseInt(pageNum) &&  parseInt(pageNum) <= parseInt(total_page_number)) {
+                query(pageNum)
+            } else {
+                alert('请输入正确的页码')
+            }
+        }
+    });
+</script>
+</html>

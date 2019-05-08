@@ -1,0 +1,403 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="../common/css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../common/plugins/poshytip/style.css" />
+    <link rel="stylesheet" type="text/css" href="../common/css/table.css" />
+    <style>
+        .jOperateBox{font-size: 14px;}
+
+        .jOperateBox .conditionBox{}
+        .jOperateBox .conditionBox:after{content: '';display: block;clear: both;}
+        .mySeacherBox{
+            float: left;
+            width: 30%;
+            margin:5px;
+        }
+        .twoThirdsWidth{width: 61%}
+        .oneRow{width: 92%}
+        .mySeacherBox label{
+            display: inline-block;
+            width: 110px;
+            text-align: right;
+            font-size: 12px;
+        }
+        .mySeacherBox select{
+            font-size: 12px;
+            width:calc(100% - 120px);
+        }
+        .mySeacherBox input{
+            font-size: 12px;
+            width:calc(100% - 120px);height: 28px;
+        }
+        .mySeacherBox textarea{
+            font-size: 12px;
+            width:calc(100% - 120px);
+        }
+        .btn{
+            width:100%;
+            height:50px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+        .btn input{
+            outline: none;
+        }
+        .areaTextBox{}
+        .areaTextBox:after{content: '';display: block;clear: both;}
+        .areaTextBox label{float: left;}
+        .areaTextBox textarea{float: left;}
+
+    </style>
+    <script type="text/javascript" src="../common/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../common/plugins/dateInput/jquery.dateInput.js"></script>
+    <script type="text/javascript" src="../common/plugins/poshytip/jquery.poshytip.min.js"></script>
+    <script type="text/javascript" src="../common/plugins/validationPoshytip/validation.js"></script>
+    <script type="text/javascript" src="../common/plugins/validationPoshytip/validationConstants.js"></script>
+    <script type="text/javascript" src="../common/js/common.js"></script>
+</head>
+<body>
+<div class="jOperateBox">
+    <div class="conditionBox">
+        <div class="mySeacherBox">
+            <label>客户姓名：</label>
+            <input optional="true" disabled id="name" type="text" name="name" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox" style="">
+            <label>证件号码：</label>
+            <input optional="true" disabled id="id_number" type="text" name="id_number" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox" style="">
+            <label>性别：</label>
+            <select id="gender" disabled>
+                <option value="01">男</option>
+                <option value="02">女</option>
+            </select>
+        </div>
+        <div class="mySeacherBox">
+            <label>最近办理时间：</label>
+            <input optional="true" disabled id="last_process_time" type="text" name="last_process_time" placeholder="" class="input_Style dateInput" />
+        </div>
+        <div class="mySeacherBox">
+            <label>手机号码：</label>
+            <input optional="true" disabled id="mobile_number" type="text" name="mobile_number" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label>还款账户绑定：</label>
+            <input optional="true" disabled id="repayment_type" type="text" name="repayment_type" placeholder="" class="input_Style" />
+            <!--<select id="repayment_type" onchange="searchForApp(this);">
+                <option value="jingban">约定还款</option>
+                <option value="guanliyuan">？？？</option>
+            </select>-->
+        </div>
+        <div class="mySeacherBox" style="">
+            <label>通讯地址：</label>
+            <input optional="true" disabled id="address" type="text" name="address" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label>家庭电话：</label>
+            <input optional="true" disabled id="home_tel" type="text" name="home_tel" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label>工作单位：</label>
+            <input optional="true" disabled id="company" type="text" name="company" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label>当前临时额度：</label>
+            <input optional="true" disabled id="temp_credit_limit" type="text" name="temp_credit_limit" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label>响应等级：</label>
+            <input optional="true" disabled id="response_level" type="text" name="response_level" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label>账单余额：</label>
+            <input optional="true" disabled id="bill_amount" type="text" name="beizhu" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label>卡号：</label>
+            <input optional="true" disabled id="card_number" type="text" name="card_number" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label>产品类别：</label>
+            <input optional="true" disabled id="product_type" type="text" name="product_type" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label>卡片信用额度：</label>
+            <input optional="true" disabled id="credit_limit" type="text" name="credit_limit" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label>账单日：</label>
+            <input optional="true" disabled id="bill_date" type="text" name="bill_date" placeholder="" class="input_Style dateInput" />
+        </div>
+        <div class="mySeacherBox">
+            <label>最后还款日：</label>
+            <input optional="true" disabled id="repayment_date" type="text" name="repayment_date" placeholder="" class="input_Style dateInput" />
+        </div>
+        <div class="mySeacherBox">
+            <label>分派管理员：</label>
+            <input optional="true" disabled  id="marketer" type="text" name="marketer" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label>联系情况：</label>
+            <select id="contact_type">
+                <option value="">请选择</option>
+                <option value="01">同意</option>
+                <option value="02">拒绝</option>
+                <option value="03">无人接听</option>
+                <option value="04">空号</option>
+                <option value="05">再联系</option>
+                <option value="06">约定时间</option>
+                <option value="07">已还款</option>
+                <option value="08">无效数据</option>
+            </select>
+        </div>
+        <!--<div class="mySeacherBox">
+            <label>数据状态：</label>
+            <select id="status" >
+                <option value="01">有效数据</option>
+                <option value="02">过期数据</option>
+            </select>
+        </div>-->
+        <div class="mySeacherBox" >
+            <label>呼出日期：</label>
+            <input optional="true"  id="call_date" type="text" name="call_date" placeholder="" class="input_Style dateInput" />
+        </div>
+        <div class="mySeacherBox" >
+            <label>追呼日期：</label>
+            <input optional="true"  id="re_call_date" type="text" name="re_call_date" placeholder="" class="input_Style dateInput" />
+        </div>
+        <div class="mySeacherBox">
+            <label>约定时间：</label>
+            <input optional="true"  id="appointed_time" type="text" name="appointed_time" placeholder="" class="input_Style dateInput" />
+        </div>
+        <div class="mySeacherBox twoThirdsWidth">
+            <label>约定信息：</label>
+            <input optional="true"  id="appointed_deatil" type="text" name="appointed_deatil" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox oneRow areaTextBox">
+            <label>备注：</label>
+            <textarea class="input_Style" optional="true" id="remark"></textarea>
+            <!--<input  type="text" name="remark" placeholder="" class="input_Style" />-->
+        </div>
+        <div class="mySeacherBox">
+            <label>可办理金额：</label>
+            <input optional="true" disabled id="accessible_amount" type="text" name="accessible_amount" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label>分期金额：</label>
+            <input optional="true"  id="installment_amount" type="text" name="installment_amount" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label>分期期数：</label>
+            <select id="installment_num"></select>
+            <!--<input optional="true"  id="installment_num" type="text" name="installment_num" placeholder="" class="input_Style" />-->
+        </div>
+        <div class="mySeacherBox">
+            <label>每期本金：</label>
+            <input disabled optional="true"  id="per_principal" type="text" name="per_principal" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label>费用收取方式：</label>
+            <select id="charging_method" disabled>
+                <!--<option value="01">一次性收取</option>-->
+                <option value="02" selected = "selected">分期收取</option>
+            </select>
+        </div>
+        <div class="mySeacherBox">
+            <label>办理时间：</label>
+            <input optional="true"  id="process_time" type="text" name="process_time" placeholder="" class="input_Style dateInput" />
+        </div>
+        <div class="mySeacherBox">
+            <label>手续费率：</label>
+            <input disabled optional="true"  id="fee_rate" type="text" name="fee_rate" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label>每期手续费(基准)：</label>
+            <input disabled optional="true"  id="per_fee" type="text" name="per_fee" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label>手续费总额(基准)：</label>
+            <input disabled optional="true"  id="all_fee" type="text" name="all_fee" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label>优惠手续费率：</label>
+            <input disabled optional="true"  id="discount_fee_rate" type="text" name="fee_rate" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label>每期手续费（优惠）</label>
+            <input disabled optional="true"  id="discount_per_fee" type="text" name="per_fee" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label>手续费总额（优惠）</label>
+            <input disabled optional="true"  id="discount_all_fee" type="text" name="all_fee" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label>折扣率</label>
+            <input disabled optional="true"  id="discount_rate" type="text" name="all_fee" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label>外呼次数：</label>
+            <input optional="true"  id="outcall_num" type="text" name="outcall_num" placeholder="" class="input_Style" />
+        </div>
+    </div>
+</div>
+<script>
+    var oInstallment_num = document.getElementById('installment_num')
+    var oInstallment_amount = document.getElementById('installment_amount')
+    var oAccessible_amount = document.getElementById('accessible_amount')
+    var api = frameElement.api
+    pageInit()
+    oInstallment_num.onchange = queryRate
+    oInstallment_amount.onchange = queryRate
+
+    function pageInit() {
+        testStatus()
+        $(".dateInput").date_input();
+        getDefauletData()
+        var date = new Date()
+        document.getElementById('process_time').value = date.getFullYear()+ '-'+ (date.getMonth()+1) + '-' + date.getDate()
+    }
+    function setSendData(callback) {
+        var requestObj = {
+            task_id: api.data.task_id,
+            name: getInputValue('name'),
+            id_number: getInputValue('id_number'),
+            gender: getInputValue('gender'),
+            last_process_time: getInputValue('last_process_time'),
+            mobile_number: getInputValue('mobile_number'),
+            repayment_type: getInputValue('repayment_type'),
+            address: getInputValue('address'),
+            home_tel: getInputValue('home_tel'),
+            company: getInputValue('company'),
+            temp_credit_limit: getInputValue('temp_credit_limit'),
+            response_level: getInputValue('response_level'),
+            card_number: getInputValue('card_number'),
+            product_type: getInputValue('product_type'),
+            credit_limit: getInputValue('credit_limit'),
+            bill_date: getInputValue('bill_date'),
+            repayment_date: getInputValue('repayment_date'),
+            marketer: getInputValue('marketer'),
+            contact_type: getInputValue('contact_type'),
+            status: getInputValue('status'),
+            call_date: getInputValue('call_date'),
+            appointed_time: getInputValue('appointed_time'),
+            appointed_deatil: getInputValue('appointed_deatil'),
+            remark: getInputValue('remark'),
+            accessible_amount: getInputValue('accessible_amount'),
+            installment_amount: getInputValue('installment_amount'),
+            installment_num: getInputValue('installment_num'),
+            per_principal: getInputValue('per_principal'),
+            charging_method: getInputValue('charging_method'),
+            fee_rate: getInputValue('fee_rate'),
+            per_fee: getInputValue('per_fee'),
+            all_fee: getInputValue('all_fee'),
+            process_time: getInputValue('process_time'),
+            outcall_num: getInputValue('outcall_num'),
+            create_time: api.data.create_time,
+            re_call_date: getInputValue('re_call_date'),
+        }
+        /*AjaxPost("/api/toms/task/update", function(data) {
+            console.log(data)
+        }, requestObj);*/
+        callback && callback(requestObj)
+        function getInputValue(id) {
+            try {
+                return document.getElementById(id).value
+            } catch (e) {
+                console.log(id,e)
+            }
+        }
+    }
+    function setPageValue() {
+        var data = api.data
+        console.log(data)
+        for (var i in data) {
+            setPageData(i,data[i])
+        }
+
+        function setPageData(id, data) {
+            try {
+                document.getElementById(id).value = data
+            } catch (e) {
+                console.log(e)
+            }
+        }
+    }
+    function getDefauletData() {
+        AjaxPost('/api/toms/rate/list/distinct', function(data) {
+            if (data.ret_code === '00000000') {
+                var str = ''
+                for (var i = 0; i <data.result.length; i++) {
+                    str += '<option value="'+data.result[i]+'">'+data.result[i]+'</option>'
+                }
+                oInstallment_num.innerHTML = str
+            }
+        }, {});
+    }
+    function queryRate() {
+        if (!!oInstallment_num.value && !!oInstallment_amount.value) {
+            if (parseFloat(installment_amount.value) > parseFloat(oAccessible_amount.value)) return alert('分期金额不大于可办理金额')
+            var sendData = {
+                "installment_amount": oInstallment_amount.value,
+                "fee_collection_method": '02',
+                "installment_num": oInstallment_num.value
+            }
+            AjaxPost('/api/toms/rate/query', function(data) {
+                if (data.ret_code === '00000000') {
+                    setDom(data.result)
+                }
+            }, sendData);
+        }
+
+        function setDom(data) {
+            for (var i in data) {
+                try {
+                    switch (i) {
+                        case 'fee_rate':
+                            document.getElementById(i).value = data[i] + '%'
+                            break
+                        case 'discount_fee_rate':
+                            document.getElementById(i).value = data[i] + '%'
+                            break
+                        case 'discount_rate':
+                            document.getElementById(i).value = data[i] + '%'
+                            break
+                        default:
+                            document.getElementById(i).value = data[i]
+                    }
+
+                }catch (e) {
+                    console.log(e)
+                }
+            }
+        }
+    }
+    function testStatus() {
+        var data = api.data
+        if (data.status === '02') {
+            var inputBox = document.getElementsByClassName('conditionBox')[0]
+            var aInput = inputBox.getElementsByTagName('input')
+            var aSelect = inputBox.getElementsByTagName('select')
+            var aTextarea = inputBox.getElementsByTagName('textarea')
+            for (var i = 0;i<aInput.length;i++) {
+                aInput[i].setAttribute('disabled', 'disabled')
+            }
+            for (var i = 0;i<aSelect.length;i++) {
+                aSelect[i].setAttribute('disabled', 'disabled')
+            }
+            for (var i = 0;i<aTextarea.length;i++) {
+                aTextarea[i].setAttribute('disabled', 'disabled')
+            }
+        }
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<title>联龙博通外呼管理平台</title>
+<link rel="stylesheet" type="text/css" href="../common/css/common.css" />
+<link rel="stylesheet" type="text/css" href="../common/plugins/poshytip/style.css" />
+<link rel="stylesheet" type="text/css" href="./css/login.css" />
+<script type="text/javascript" src="../common/js/jquery.min.js"></script>
+<script type="text/javascript" src="../common/plugins/lhgdialog/lhgdialog.min.js?skin=discuz"></script>
+<script type="text/javascript" src="../common/plugins/poshytip/jquery.poshytip.min.js"></script>
+<script type="text/javascript" src="../common/plugins/validationPoshytip/validation.js"></script>
+<script type="text/javascript" src="../common/plugins/validationPoshytip/validationConstants.js"></script>
+<script type="text/javascript" src="../common/plugins/jshash/md5-min.js"></script>
+<script type="text/javascript" src="../common/js/common.js"></script>
+<script type="text/javascript" src="./js/login.js"></script>
+</head>
+
+<body>
+	<div class="jLogin" id="pageMainContainer">
+		<div class="jHeaderBox">
+			<div class="jLogoBox">
+				<a class="jLogo" href="javascript:;"><img src="../common/images/u17.png" /></a><!-- LOGO -->
+				<p><a href="javascript:;">外呼管理平台</a></p>
+			</div>
+		</div>
+		<div class="jCenterBox" id="bg">
+			<div class="jCenLt">
+				<h3></h3>
+			</div>
+			<div class="jLoginBox">
+				<h3>登录</h3>
+				<form  id="loginPageForm" method="post" action="">
+					<div class="jInputBox_01">
+						<span></span>
+						<input type="text"  onkeydown="keyLogin();" name="userName" id="userName" placeholder="请输入登录用户名" />
+					</div>
+					<div class="jInputBox_02">
+						<span></span>
+						<input type="password" onkeydown="keyLogin();" name="password" id="password" placeholder="请输入登录密码" />
+					</div>
+					<!--<div class="jInputBox_03">
+						<span></span>
+						<input type="text" maxlength="4" name="validationImageCodeInput" id="validationImageCodeInput" placeholder="请输入图形验证码" onkeydown="keyLogin();" limitLength="4" tipOffsetX="142" />
+						<img src="#" id="validationImageCode" onClick="showValidationImageCode();" />
+					</div>-->
+					<div class="jOperate">
+						<span id="showErrorMsg" style="color:red;"></span>
+					</div>
+					<div class="jOperate">
+						推荐浏览器：
+						<a href="../files/Google_Chrome_(32bit)_v49.0.2623.112.exe" style="display:inline-block;">Chrome</a>、
+						<a href="../files/Firefox Setup 52.0.1win32.exe" style="display:inline-block;">Firefox</a>
+					</div>
+					<input type="button" class="jLoginBtn" style="float:left;" onclick="login();" value="登录" />
+					<input type="reset" class="jLoginBtn" style="float:right;" value="重置" />
+				</form>
+			</div>
+		</div>
+		<div class="jNotice">
+			<!--<div class="jNoticeCont">-->
+				<!--<a class="jCheckBtn" href="javscript:;">查看全部</a>-->
+				<!--<span class="jNoticeicon">公告</span>-->
+				<!--<ul>-->
+					<!--<li>-->
+						<!--<span></span>-->
+						<!--测试公告测试公告测试公告测试公告测试公告-->
+					<!--</li>-->
+					<!--<li>-->
+						<!--<span></span>-->
+						<!--测试公告测试公告测试公告测试公告测试公告-->
+					<!--</li>-->
+				<!--</ul>-->
+			<!--</div>-->
+		</div>
+	</div>
+</body>
+</html>

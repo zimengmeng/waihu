@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<title>系统管理平台</title>
+<link rel="stylesheet" type="text/css" href="../common/css/common.css" />
+<link rel="stylesheet" type="text/css" href="../common/plugins/poshytip/style.css" />
+<link rel="stylesheet" type="text/css" href="../common/css/table.css" />
+<script type="text/javascript" src="../common/js/jquery.min.js"></script>
+<script type="text/javascript" src="../common/plugins/lhgdialog/lhgdialog.min.js?skin=discuz"></script>
+<script type="text/javascript" src="../common/plugins/poshytip/jquery.poshytip.min.js"></script>
+<script type="text/javascript" src="../common/plugins/validationPoshytip/validation.js"></script>
+<script type="text/javascript" src="../common/plugins/validationPoshytip/validationConstants.js"></script>
+<script type="text/javascript" src="../common/js/common.js"></script>
+<script>
+	function pageLoadData() {
+		query(1, defaultListPageSize);
+	}
+
+	function query(pageNo, pageSize) {
+		var requestObj = {
+			page_no:pageNo,
+			page_size:defaultListPageSize
+		};
+
+		AjaxPost("/api/piosp/application/list", function(data) {
+			document.getElementById("total_record_number").innerHTML = data.result.total_record_number;
+			document.getElementById("page_no").innerHTML = data.result.page_no;
+			document.getElementById("total_page_number").innerHTML = data.result.total_page_number;
+			if (data.result.has_previous_page) {
+				$("#previous_page").attr("class", "jPrevBtn");
+				$("#previous_page").attr("href", "javascript:query("+ data.result.pre_page_no + ", " + defaultListPageSize + ");");
+			} else {
+				$("#previous_page").attr("class", "jPrevend");
+				$("#previous_page").attr("href", "javascript:;");
+			}
+			if (data.result.has_next_page) {
+				$("#next_page").attr("class", "jNextBtn");
+				$("#next_page").attr("href", "javascript:query("+ data.result.next_page_no + ", " + defaultListPageSize + ");");
+			} else {
+				$("#next_page").attr("class", "jNextend");
+				$("#next_page").attr("href", "javascript:;");
+			}
+			var resultList = data.result.result_list;
+			var tableContent = "<ul>";
+			for (var i = 0; i < resultList.length; i ++) {
+				var application = resultList[i];
+				tableContent += "<li><ul>";
+				tableContent += "<li class=\"showText\" style=\"width:80px;\">" + application.application_id + "</li>";
+				tableContent += "<li class=\"showText\" style=\"width:280px;\">" + application.secret_key + "</li>";
+				tableContent += "<li class=\"showText\" style=\"width:135px;\">" + application.name + "</li>";
+				tableContent += "<li class=\"showText\" style=\"width:135px;\">" + application.type_name + "</li>";
+				tableContent += "<li class=\"showText\" style=\"width:120px;\">" + application.platform + "</li>";
+				tableContent += "<li class=\"showText\" style=\"width:100px;\">" + application.creator + "</li>";
+				tableContent += "<li class=\"showText\" style=\"width:100px;\">" + application.create_time + "</li>";
+				tableContent += "<li class=\"showText\" style=\"width:116px;\">查看详情</li>";
+				tableContent += "</li></ul>";
+			}
+			tableContent += "</ul>";
+			document.getElementById("table_content_area").innerHTML = tableContent;
+			adapt_iframeHeight();
+		}, requestObj);
+	}
+</script>
+</head>
+
+<body onload="pageLoadData();">
+	<!-- 筛选搜索 -->
+	<div class="jOperateBox">
+		<!--<div class="jSeacherBox">
+			<a class="jSearchBtn" href="javascript:;">搜索</a>
+			<div class="jSearchbor">
+				<input type="text" id="SearchKeyword_Input" placeholder="请输入关键字进行搜索" value="${keyword }" />
+			</div>
+		</div>-->
+	</div>
+	<div class="jSMBTit">
+		<!-- 全选 添加类名 控制样式jTitSelectBox -->
+		<!-- <span class="jSelectBox jTitSelectBox"><a class="jSelectedno" href="javascript:;"></a></span> -->
+		<ul style="padding-left:20px;">
+			<!-- <li class="jAllPitch">全选</li> -->
+			<li>共计<span id="total_record_number"></span></span>条记录</li>
+			<li><span id="page_no"></span>/<span id="total_page_number"></span></li>
+			<li class="jPageBtn">
+				<a href="javascript:;" id="previous_page" class="jPrevend"></a>
+				<a href="javascript:;" id="next_page" class="jNextend"></a>
+			</li>
+			<li class="jSetBtnBox">
+				<a class="jAddBtn" href="./create.html">添加产品</a>
+			</li>
+		</ul>
+	</div>
+	<div class="table_header_area">
+		<ul>
+			<li style="width:80px;">APP ID</li>
+			<li style="width:280px;">SECRET KEY</li>
+			<li style="width:135px;">产品名称</li>
+			<li style="width:135px;">产品类型</li>
+			<li style="width:120px;">所属平台</li>
+			<li style="width:100px;">创建人员</li>
+			<li style="width:100px;">创建时间</li>
+			<li style="width:116px;">操作</li>
+		</ul>
+	</div>
+	<div class="table_content_area" id="table_content_area"></div>
+</body>
+</html>

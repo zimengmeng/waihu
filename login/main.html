@@ -1,0 +1,246 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<title>联龙博通外呼管理平台</title>
+<link rel="stylesheet" type="text/css" href="../common/css/common.css" />
+<link rel="stylesheet" type="text/css" href="../common/plugins/poshytip/style.css" />
+<script type="text/javascript" src="../common/js/jquery.min.js"></script>
+<script type="text/javascript" src="../common/plugins/lhgdialog/lhgdialog.min.js?skin=discuz"></script>
+<script type="text/javascript" src="../common/plugins/poshytip/jquery.poshytip.min.js"></script>
+<script type="text/javascript" src="../common/plugins/validationPoshytip/validation.js"></script>
+<script type="text/javascript" src="../common/plugins/validationPoshytip/validationConstants.js"></script>
+<script type="text/javascript" src="../common/js/common.js"></script>
+</head>
+<body>
+	<div class="jAfterLogin" id="pageMainContainer">
+		<div class="jHeaderBox">
+			<!-- 已登录 -->
+			<div class="jALCont">
+				<div class="jOutBtn">
+					<a href="./login.html">退出</a>
+				</div>
+				<div class="jAdminImg">
+					<img src="../common/images/adminimg.png" />
+				</div>
+				<div class="jNameBox">
+ 					<!--<span>客户管理员</span>-->
+					<p id="pp" style="width: 100%;line-height: 40px;">测试用户1</p>
+				</div>
+				<!--<div class="jMessageBox">-->
+					<!--<a  href="javascript:;" onclick="">修改密码</a>-->
+				<!--</div>-->
+			</div>
+			<div class="jLogoBox">
+				<a class="jLogo" href="javascript:;"><img src="../common/images/u17.png" /></a><!-- LOGO -->
+				<p><a href="javascript:;">外呼管理平台</a></p>
+			</div>
+		</div>
+		<div class="jAfterLoginCont">
+			<div class="jALBg clearfix">
+				<div class="jLeftMenu" id="main_LeftMenu">
+					<dl>
+						<dt class="jDTSy">
+							<span></span>
+							<a href="#" onclick="setMain_iframeSrc(this, '../login/welcome.html');">首页</a>
+						</dt>
+						<dt class="jDTGl">
+							<span></span>
+							<p>外呼中心</p>
+						</dt>
+						<dd><a href="#" onclick="setMain_iframeSrc(this, '../dataInput/dataInput.html');">数据导入</a></dd>
+						<dd><a href="#" onclick="setMain_iframeSrc(this, '../taskManagement/list.html');">任务管理</a></dd>
+						<dd><a href="#" onclick="setMain_iframeSrc(this, '../assign/assign.html');">任务指派</a></dd>
+						<dd><a href="#" onclick="setMain_iframeSrc(this, '../enter/enter.html');">单笔录入</a></dd>
+						<dt class="jDTTj">
+							<span></span>
+						<p>工作报表</p>
+						</dt>
+						<dd><a href="#" onclick="setMain_iframeSrc(this, '../outboundStatistics/list.html');">外呼量统计</a></dd>
+						<dt class="jDTSz">
+							<span></span>
+							<p>系统管理</p>
+						</dt>
+						<dd><a href="#" onclick="setMain_iframeSrc(this, '../personnel/personnel .html');">人员管理</a></dd>
+						<dd><a href="#" onclick="setMain_iframeSrc(this, '../rate/rate.html');">费率管理</a></dd>
+
+					</dl>
+				</div>
+				<div class="jRightCont" id="pageRightContainer">
+					<iframe src="welcome.html" id="main_iframe" width="100%" height="300" frameborder="0" scrolling="no"></iframe>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+        $(function () {
+            function toWelcomePage() {
+                var aTags = document.getElementById("main_LeftMenu").getElementsByTagName("a");
+                for (var i = 0; i < aTags.length; i++) {
+                    if (aTags[i].getAttribute("class") && "cur" == aTags[i].getAttribute("class")) {
+                        aTags[i].removeAttribute("class");
+                    }
+                }
+                setIframeSrcById("main_iframe", "W\welcome.html");
+            }
+            setMenuList()
+            function setMenuList() {
+                var userInfo = JSON.parse(localStorage.getItem('userInfo'))
+                console.log(userInfo)
+                $("#pp").html(userInfo.user_name);
+                var menuList = userInfo.role_detail_list
+                /*for(var i = 0; i < menuList.length;i++) {
+                    if (hasCallCenter()) {
+                        var template = '<dt class="jDTSy">' +
+                            '<span></span>' +
+                            '<a href="#" onclick="setMain_iframeSrc(this, \'../login/welcome.html\');">首页</a>' +
+                            '</dt>' +
+                            '<dt class="jDTGl">' +
+                            '<span></span>' +
+                            '<p>外呼中心</p>' +
+                            '</dt>'
+                    }
+                    switch (menuList[i].function_name) {
+                        case '数据导入':
+                            template += '<dd><a href="#" onclick="setMain_iframeSrc(this, \'../dataInput/dataInput.html\');">数据导入</a></dd>'
+                            break;
+                        case '任务管理':
+                            template += '<dd><a href="#" onclick="setMain_iframeSrc(this, \'../taskManagement/list.html\');">任务管理</a></dd>'
+                            break;
+                        case '任务指派':
+                            template += '<dd><a href="#" onclick="setMain_iframeSrc(this, \'../assign/assign.html\');">任务指派</a></dd>'
+                            break;
+                        case '单笔录入':
+                            template += '<dd><a href="#" onclick="setMain_iframeSrc(this, \'../enter/enter.html\');">单笔录入</a></dd>'
+                            break;
+                        default:
+                    }
+                    if (hasWorkReport()) {
+                        template += '<dt class="jDTTj">' +
+                            '<span></span>' +
+                            '<p>工作报表</p>' +
+                            '</dt>'
+                    }
+                    switch (menuList[i].function_name) {
+                        case '外呼量统计':
+                            template += '<dd><a href="#" onclick="setMain_iframeSrc(this, \'../outboundStatistics/list.html\');">外呼量统计</a></dd>'
+                            break;
+                        default:
+                    }
+                    if (hasSystemManagement()) {
+                        template += '<dt class="jDTSz">' +
+                            '<span></span>' +
+                            '<p>系统管理</p>' +
+                            '</dt>'
+					}
+                    switch (menuList[i].function_name) {
+                        case '人员管理':
+                            template += '<dd><a href="#" onclick="setMain_iframeSrc(this, \'../personnel/personnel .html\');">人员管理</a></dd>'
+                            break;
+                        case '费率管理':
+                            template += '<dd><a href="#" onclick="setMain_iframeSrc(this, \'../rate/rate.html\');">费率管理</a></dd>'
+                            break;
+                        default:
+                    }
+				}*/
+
+               if(hasCallCenter()) {
+                   var template = '<dt class="jDTSy">' +
+                       '<span></span>' +
+                       '<a href="#" onclick="setMain_iframeSrc(this, \'../login/welcome.html\');">首页</a>' +
+                       '</dt>' +
+                       '<dt class="jDTGl">' +
+                       '<span></span>' +
+                       '<p>外呼中心</p>' +
+                       '</dt>'
+			   }
+
+                for(var i = 0; i < menuList.length;i++) {
+                    switch (menuList[i].function_name) {
+                        case '数据导入':
+                            template += '<dd><a href="#" onclick="setMain_iframeSrc(this, \'../dataInput/dataInput.html\');">数据导入</a></dd>'
+                            break;
+                        case '任务管理':
+                            template += '<dd><a href="#" onclick="setMain_iframeSrc(this, \'../taskManagement/list.html\');">任务管理</a></dd>'
+                            break;
+                        case '任务指派':
+                            template += '<dd><a href="#" onclick="setMain_iframeSrc(this, \'../assign/assign.html\');">任务指派</a></dd>'
+                            break;
+                        case '单笔录入':
+                            template += '<dd><a href="#" onclick="setMain_iframeSrc(this, \'../enter/enter.html\');">单笔录入</a></dd>'
+                            break;
+                        default:
+                    }
+                }
+
+                if (hasWorkReport()) {
+                    template += '<dt class="jDTTj">' +
+                        '<span></span>' +
+                        '<p>工作报表</p>' +
+                        '</dt>'
+				}
+                for (var i = 0; i < menuList.length; i++) {
+                    switch (menuList[i].function_name) {
+                        case '外呼量统计':
+                            template += '<dd><a href="#" onclick="setMain_iframeSrc(this, \'../outboundStatistics/list.html\');">外呼量统计</a></dd>'
+                            break;
+                        default:
+                    }
+                }
+                if (hasSystemManagement()) {
+                    template += '<dt class="jDTSz">' +
+                        '<span></span>' +
+                        '<p>系统管理</p>' +
+                        '</dt>'
+				}
+
+                for (var i = 0; i < menuList.length; i++) {
+                    switch (menuList[i].function_name) {
+                        case '人员管理':
+                            template += '<dd><a href="#" onclick="setMain_iframeSrc(this, \'../personnel/personnel .html\');">人员管理</a></dd>'
+                            break;
+                        case '费率管理':
+                            template += '<dd><a href="#" onclick="setMain_iframeSrc(this, \'../rate/rate.html\');">费率管理</a></dd>'
+                            break;
+                        default:
+                    }
+                }
+
+                $('#main_LeftMenu dl').html(template)
+
+                function hasCallCenter() {
+                    var status = false
+                    for (var i = 0; i < menuList.length; i++) {
+                        if (menuList[i].function_name === '数据导入' ||  menuList[i].function_name === '任务管理' ||  menuList[i].function_name === '任务指派' || menuList[i].function_name === '单笔录入') {
+                            status = true
+							break
+                        }
+                    }
+                    return status
+                }
+                function hasWorkReport() {
+                    var status = false
+                    for (var i = 0; i < menuList.length; i++) {
+                        if (menuList[i].function_name === '外呼量统计') {
+                            status = true
+                            break
+                        }
+                    }
+                    return status
+                }
+                function hasSystemManagement() {
+                    var status = false
+                    for (var i = 0; i < menuList.length; i++) {
+                        if (menuList[i].function_name === '人员管理' || menuList[i].function_name === '费率管理') {
+                            status = true
+                            break
+                        }
+                    }
+                    return status
+                }
+            }
+        })
+	</script>
+</body>
+</html>

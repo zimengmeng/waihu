@@ -1,0 +1,132 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<title>系统管理平台</title>
+<link rel="stylesheet" type="text/css" href="../common/css/common.css" />
+<link rel="stylesheet" type="text/css" href="../common/plugins/poshytip/style.css" />
+<link rel="stylesheet" type="text/css" href="../common/css/table.css" />
+<script type="text/javascript" src="../common/js/jquery.min.js"></script>
+<script type="text/javascript" src="../common/plugins/lhgdialog/lhgdialog.min.js?skin=discuz"></script>
+<script type="text/javascript" src="../common/plugins/poshytip/jquery.poshytip.min.js"></script>
+<script type="text/javascript" src="../common/plugins/validationPoshytip/validation.js"></script>
+<script type="text/javascript" src="../common/plugins/validationPoshytip/validationConstants.js"></script>
+<script type="text/javascript" src="../common/js/common.js"></script>
+<script>
+	function pageLoadData() {
+		queryAllApplication();
+		query(1, defaultListPageSize);
+	}
+
+	var selectedApplicationId = "";
+	function queryAllApplication() {
+		var requestObj = {
+			page_no:1,
+			page_size:0
+		};
+
+		AjaxPost("/api/piosp/application/list", function(data) {
+			var resultList = data.result.result_list;
+			var selectContent = "<option value=\"\">全部</option>";
+			for (var i = 0; i < resultList.length; i ++) {
+				var application = resultList[i];
+				selectContent += "<option value=\"" + application.application_id + "\">" + application.name + "</option>";
+			}
+			document.getElementById("selectApplication").innerHTML = selectContent;
+		}, requestObj);
+	}
+
+	function query(pageNo, pageSize) {
+		var requestObj = {
+			page_no:pageNo,
+			page_size:defaultListPageSize
+		};
+		if (selectedApplicationId) {
+			requestObj.application_id = selectedApplicationId;
+		}
+
+		AjaxPost("/api/piosp/application/flow/list", function(data) {
+			document.getElementById("total_record_number").innerHTML = data.result.total_record_number;
+			document.getElementById("page_no").innerHTML = data.result.page_no;
+			document.getElementById("total_page_number").innerHTML = data.result.total_page_number;
+			var resultList = data.result.result_list;
+			if (data.result.has_previous_page) {
+				$("#previous_page").attr("class", "jPrevBtn");
+				$("#previous_page").attr("href", "javascript:query("+ data.result.pre_page_no + ", " + defaultListPageSize + ");");
+			} else {
+				$("#previous_page").attr("class", "jPrevend");
+				$("#previous_page").attr("href", "javascript:;");
+			}
+			if (data.result.has_next_page) {
+				$("#next_page").attr("class", "jNextBtn");
+				$("#next_page").attr("href", "javascript:query("+ data.result.next_page_no + ", " + defaultListPageSize + ");");
+			} else {
+				$("#next_page").attr("class", "jNextend");
+				$("#next_page").attr("href", "javascript:;");
+			}
+			var tableContent = "<ul>";
+			for (var i = 0; i < resultList.length; i ++) {
+				var application = resultList[i];
+				tableContent += "<li><ul>";
+				tableContent += "<li class=\"showText\" style=\"width:180px;\">" + application.name + "</li>";
+				tableContent += "<li class=\"showText\" style=\"width:180px;\">" + application.application_name + "</li>";
+				tableContent += "<li class=\"showText\" style=\"width:190px;\">" + (isNullOrEmpty(application.description)?"-":application.description) + "</li>";
+				tableContent += "<li class=\"showText\" style=\"width:100px;\">" + application.creator + "</li>";
+				tableContent += "<li class=\"showText\" style=\"width:100px;\">" + application.create_time + "</li>";
+				tableContent += "<li class=\"showText\" style=\"width:100px;\">" + (isNullOrEmpty(application.last_editor)?"-":application.last_editor) + "</li>";
+				tableContent += "<li class=\"showText\" style=\"width:100px;\">" + (isNullOrEmpty(application.last_edit_time)?"-":application.last_edit_time) + "</li>";
+				tableContent += "<li class=\"showText\" style=\"width:116px;\">修改</li>";
+				tableContent += "</li></ul>";
+			}
+			tableContent += "</ul>";
+			document.getElementById("table_content_area").innerHTML = tableContent;
+			adapt_iframeHeight();
+		}, requestObj);
+	}
+
+	function searchForApp(obj) {
+		selectedApplicationId = obj.value;
+		query(1, defaultListPageSize);
+	}
+</script>
+</head>
+
+<body onload="pageLoadData();">
+	<!-- 筛选搜索 -->
+	<div class="jOperateBox">
+		<div class="jSeacherBox" style="width:400px; float: left;">
+			产品：<select id="selectApplication" onchange="searchForApp(this);"></select>
+		</div>
+	</div>
+	<div class="jSMBTit">
+		<!-- 全选 添加类名 控制样式jTitSelectBox -->
+		<!-- <span class="jSelectBox jTitSelectBox"><a class="jSelectedno" href="javascript:;"></a></span> -->
+		<ul style="padding-left:20px;">
+			<!-- <li class="jAllPitch">全选</li> -->
+			<li>共计<span id="total_record_number"></span></span>条记录</li>
+			<li><span id="page_no"></span>/<span id="total_page_number"></span></li>
+			<li class="jPageBtn">
+				<a href="javascript:;" id="previous_page" class="jPrevend"></a>
+				<a href="javascript:;" id="next_page" class="jNextend"></a>
+			</li>
+			<li class="jSetBtnBox">
+				<a class="jAddBtn" href="./create.html">添加</a>
+			</li>
+		</ul>
+	</div>
+	<div class="table_header_area">
+		<ul>
+			<li style="width:180px;">流程名称</li>
+			<li style="width:180px;">所属产品</li>
+			<li style="width:190px;">流程说明</li>
+			<li style="width:100px;">创建人员</li>
+			<li style="width:100px;">创建时间</li>
+			<li style="width:100px;">上次修改人</li>
+			<li style="width:100px;">上次修改时间</li>
+			<li style="width:116px;">操作</li>
+		</ul>
+	</div>
+	<div class="table_content_area" id="table_content_area"></div>
+</body>
+</html>

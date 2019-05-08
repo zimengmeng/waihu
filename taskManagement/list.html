@@ -1,0 +1,495 @@
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<title>系统管理平台</title>
+	<link rel="stylesheet" type="text/css" href="../common/css/common.css" />
+	<link rel="stylesheet" type="text/css" href="../common/plugins/poshytip/style.css" />
+	<link rel="stylesheet" type="text/css" href="../common/css/table.css" />
+	<style>
+		.jOperateBox{border-bottom: 1px solid #ddd;margin-bottom: 10px;}
+		.jOperateBox .conditionBox:after{content: '';display: block;clear: both;}
+		.mySeacherBox{width:25%; float: left;margin-bottom: 6px;font-size: 14px;}
+		.mySeacherBox label{display: inline-block;width: 100px;text-align: right;}
+		.mySeacherBox select{width:calc(100% - 110px);}
+		.mySeacherBox input{width:calc(100% - 110px);height: 28px;}
+		.jOperateBox .btnBox{text-align: center;}
+		.jOperateBox .btnBox .jChooseFile:focus{outline: none;}
+		.table_box{width: 100%;overflow: auto;}
+		.table_header_area,.table_content_area{width: 1300px;}
+		.table_header_area .myTable li{padding:0 5px;font-size: 12px;/*text-align: left;*/}
+		.tableBtnBox input[type=button]{width: 90px;}
+		#taskManagement .table_content_area li li{padding:0 5px;font-size: 12px;/*text-align: left;*/}
+		.jSMBTit ul li.jPageBtn{width: 40px;}
+		#pageNum {width: 20px;height:18px;line-height: 18px;margin: 0 5px;}
+		#pageNumJump{width: 100px;}
+	</style>
+	<script type="text/javascript" src="../common/js/jquery.min.js"></script>
+	<script type="text/javascript" src="../common/plugins/lhgdialog/lhgdialog.min.js?skin=discuz"></script>
+	<script type="text/javascript" src="../common/plugins/dateInput/jquery.dateInput.js"></script>
+	<script type="text/javascript" src="../common/plugins/poshytip/jquery.poshytip.min.js"></script>
+	<script type="text/javascript" src="../common/plugins/validationPoshytip/validation.js"></script>
+	<script type="text/javascript" src="../common/plugins/validationPoshytip/validationConstants.js"></script>
+	<script type="text/javascript" src="../common/js/common.js"></script>
+	<script>
+        function pageLoadData() {
+            query();
+        }
+        var listData = [];
+		var defaultListPageSize = 10
+		var pageNum = null;
+        function query(pageNo, pageSize) {
+            var requestObj = {
+                "page_no": pageNo ? pageNo : 1,
+                "page_size": pageSize ? pageSize : 10,
+                "appointed_time": getInputValue('appointed_time'),
+                "card_number": getInputValue('card_number'),
+                "contact_type": getInputValue('contact_type'),
+                "create_time": getInputValue('create_time'),
+                // "credit_limit": getInputValue('credit_limit'),
+                "end_accessible_amount": getInputValue('end_accessible_amount'),
+				"operator_name": getInputValue('operator_name'),
+				"last_edit_time": getInputValue('last_edit_time'),
+                "end_bill_date": getInputValue('end_bill_date'),
+                "end_process_time": getInputValue('end_process_time'),
+                "id_number": getInputValue('id_number'),
+                "mobile_number": getInputValue('mobile_number'),
+                "name": getInputValue('name'),
+                "repayment_date": getInputValue('repayment_date'),
+                "start_accessible_amount": getInputValue('start_accessible_amount'),
+                "start_bill_date": getInputValue('start_bill_date'),
+                "start_process_time": getInputValue('start_process_time'),
+                "status": getInputValue('status')
+            };
+
+            AjaxPost("/api/toms/task/list", function(data) {
+                document.getElementById("total_record_number").innerHTML = data.result.total_record_number;
+                document.getElementById("page_no").innerHTML = data.result.page_no;
+                document.getElementById("total_page_number").innerHTML = data.result.total_page_number;
+                if (data.result.has_previous_page) {
+                    $("#previous_page").attr("class", "jPrevBtn");
+                    $("#previous_page").attr("href", "javascript:query("+ data.result.pre_page_no + ", " + defaultListPageSize + ");");
+                } else {
+                    $("#previous_page").attr("class", "jPrevend");
+                    $("#previous_page").attr("href", "javascript:;");
+                }
+                if (data.result.has_next_page) {
+                    $("#next_page").attr("class", "jNextBtn");
+                    $("#next_page").attr("href", "javascript:query("+ data.result.next_page_no + ", " + defaultListPageSize + ");");
+                } else {
+                    $("#next_page").attr("class", "jNextend");
+                    $("#next_page").attr("href", "javascript:;");
+                }
+                setListDom(data)
+            }, requestObj);
+
+            function getInputValue(id) {
+				return document.getElementById(id).value
+            }
+        }
+        function setListDom(data) {
+            pageNum = data.result.page_no
+            var tableContent = "<ul>";
+            var resultList = data.result.result_list
+            var pageListData = []
+            for (var i = 0; i < resultList.length; i++) {
+                var application = resultList[i];
+                tableContent += "<li><ul>";
+                tableContent += "<li class=\"showText\" style=\"width:40px;\">" +parseInt(i+1) + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:16px;\"><input class='checkInput' optional type='checkbox' value='" + detectionData(application.IDNumber) + "'></li>";
+                tableContent += "<li class=\"showText\" style=\"width:60px;\">" + detectionData(application.name) + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:130px;\">" + detectionData(application.id_number) + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:130px;\">" + detectionData(application.card_number) + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:70px;\">" + detectionData(application.bill_date) + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:70px;\">" + detectionData(application.repayment_date) + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:70px;\">" + detectionData(application.accessible_amount) + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:120px;\">" + detectionData(application.last_process_time) + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:80px;\">" + detectionData(application.mobile_number) + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:60px;\">" + detectionData(application.response_level) + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:70px;\">" + detectionData(application.operator_name) + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:60px;\">" + detectionData(translateData(application.contact_type)) + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:120px;\">" + detectionData(application.appointed_time) + "</li>";
+                // tableContent += "<li class=\"showText\" style=\"width:100px;\">" + (isNullOrEmpty(application.last_edit_time) ? "-" : application.last_edit_time) + "</li>";
+                // tableContent += "<li class=\"showText\" style=\"width:116px;\">修改</li>";
+                tableContent += "<li><input class=\"hiddenInput\" type='hidden' data-itemData='"+ JSON.stringify(application) +"'></li>";
+                tableContent += "</li></ul>";
+                pageListData.push({
+                    no: (i+1),
+                    name: detectionData(application.name),
+                    id_number: detectionData(application.id_number),
+                    card_number: detectionData(application.card_number),
+                    bill_date: detectionData(application.bill_date),
+                    repayment_date: detectionData(application.bill_date),
+                    accessible_amount: detectionData(application.accessible_amount),
+                    last_process_time: detectionData(application.last_process_time),
+                    mobile_number: detectionData(application.mobile_number),
+                    response_level: detectionData(application.response_level),
+                    marketer: detectionData(application.marketer),
+                    contact_type: detectionData(translateData(application.contact_type)),
+                    appointed_time: detectionData(application.appointed_time),
+				})
+            }
+            tableContent += "</ul>";
+            listData = pageListData
+            document.getElementById("table_content_area").innerHTML = tableContent;
+            adapt_iframeHeight();
+            utils.checkAll('allCheck','checkInput')
+            function detectionData(data) {
+               return isNullOrEmpty(data) ? "-" : data
+            }
+            function translateData(value) {
+                switch (value) {
+					case '01':
+                        value = '同意'
+					    break;
+					case '02':
+                        value = '拒绝'
+                        break;
+                    case '03':
+                        value = '无人接听'
+                        break;
+                    case '04':
+                        value = '空号'
+                        break;
+                    case '05':
+                        value = '再联系'
+                        break;
+                    case '06':
+                        value = '约定时间'
+                        break;
+                    case '07':
+                        value = '已还款'
+                        break;
+                    case '08':
+                        value = '无效数据'
+                        break;
+					default:
+					    console.log('error' + value)
+				}
+				return value
+            }
+        }
+        function clearValue() {
+			var oInputkey = [
+			    'status','contact_type','name',
+				'id_number','mobile_number','marketer',
+				'card_number','last_edit_time','start_bill_date',
+				'start_process_time','start_accessible_amount','appointed_time',
+				'end_bill_date','end_process_time','end_accessible_amount',
+				'repayment_date','create_time'
+			]
+            for (var i = 0; i < oInputkey.length; i++) {
+                clearTools(oInputkey[i])
+            }
+            function clearTools(id) {
+			    try {
+                    document.getElementById(id).value = ''
+				} catch (e) {
+			        console.log(e)
+				}
+            }
+        }
+	</script>
+</head>
+
+<body onload="pageLoadData();" id="taskManagement">
+<!-- 筛选搜索 -->
+<div class="jOperateBox" style="height:auto;">
+	<div class="conditionBox">
+		<div class="mySeacherBox" style="">
+			<label>数据状态：</label>
+			<select id="status">
+				<option value="">全部数据</option>
+				<option value="01">有效数据</option>
+				<option value="02">过期数据</option>
+			</select>
+		</div>
+		<div class="mySeacherBox">
+			<label>联系情况：</label>
+			<select id="contact_type">
+				<option value="">请选择</option>
+				<option value="01">同意</option>
+				<option value="02">拒绝</option>
+				<option value="03">无人接听</option>
+				<option value="04">空号</option>
+				<option value="05">再联系</option>
+				<option value="06">约定时间</option>
+				<option value="07">已还款</option>
+				<option value="08">无效数据</option>
+			</select>
+		</div>
+		<div class="mySeacherBox">
+			<label>客户姓名：</label>
+			<input optional="true" id="name" type="text" name="" placeholder="" />
+		</div>
+		<div class="mySeacherBox">
+			<label>证件号码：</label>
+			<input optional="true" id="id_number" type="text" name="" placeholder="" />
+		</div>
+		<div class="mySeacherBox">
+			<label>手机号码：</label>
+			<input optional="true" id="mobile_number" type="text" name="" placeholder="" />
+		</div>
+		<div class="mySeacherBox">
+			<label>坐席人员：</label>
+			<input optional="true" id="operator_name" type="text" name="" placeholder="" />
+		</div>
+		<div class="mySeacherBox">
+			<label>卡号：</label>
+			<input optional="true" id="card_number" type="text" name="" placeholder="" />
+		</div>
+		<div class="mySeacherBox">
+			<label>操作时间：</label>
+			<input optional="true" class="dateInput" id="last_edit_time" type="text" name="" placeholder="" />
+		</div>
+		<div class="mySeacherBox">
+			<label>账单日：</label>
+			<input optional="true" class="dateInput" id="start_bill_date" type="text" name="" placeholder="" />
+		</div>
+		<div class="mySeacherBox">
+			<label>办理日：</label>
+			<input optional="true" class="dateInput" id="start_process_time" type="text" name="" placeholder="" />
+		</div>
+		<div class="mySeacherBox">
+			<label>可办理金额：</label>
+			<input optional="true" id="start_accessible_amount" type="text" name="" placeholder="" />
+		</div>
+		<div class="mySeacherBox">
+			<label>约定时间：</label>
+			<input optional="true" class="dateInput" id="appointed_time" type="text" name="" placeholder="" />
+		</div>
+		<div class="mySeacherBox">
+			<label>至账单日：</label>
+			<input optional="true" class="dateInput" id="end_bill_date" type="text" name="" placeholder="" />
+		</div>
+		<div class="mySeacherBox">
+			<label>至办理日：</label>
+			<input optional="true" class="dateInput" id="end_process_time" type="text" name="" placeholder="" />
+		</div>
+		<div class="mySeacherBox">
+			<label>至可办理金额：</label>
+			<input optional="true" id="end_accessible_amount" type="text" name="" placeholder="" />
+		</div>
+		<div class="mySeacherBox">
+			<label>最后还款日：</label>
+			<input optional="true" class="dateInput" id="repayment_date" type="text" name="" placeholder="" />
+		</div>
+		<div class="mySeacherBox">
+			<label>导入日期：</label>
+			<input optional="true" class="dateInput" id="create_time" type="text" name="" placeholder="" />
+		</div>
+	</div>
+	<div class="btnBox">
+		<input type="button" value="查询" class="jChooseFile" onclick="query()"/>
+		<input type="button" value="重置" class="jChooseFile" onclick="clearValue()"/>
+	</div>
+</div>
+<div class="tableBtnBox">
+	<input type="button" value="修改" class="jChooseFile" id="updateTask"/>
+	<input type="button" value="删除" class="jChooseFile" id="listDetele"/>
+	<input type="button" value="导出" class="jChooseFile" id="export"/>
+	<input type="button" value="打印" class="jChooseFile" id="printOut"/>
+</div>
+<div class="table_box">
+	<div class="table_header_area">
+		<ul class="myTable">
+			<li style="width:40px;">No</li>
+			<li style="width:16px;"><input type="checkbox" id="allCheck"></li>
+			<li style="width:60px;">客户姓名</li>
+			<li style="width:130px;">证件号码</li>
+			<li style="width:130px;">卡号</li>
+			<li style="width:70px;">账单日</li>
+			<li style="width:70px;">最后还款日</li>
+			<li style="width:70px;">可办理金额</li>
+			<li style="width:120px;">最近办理时间</li>
+			<li style="width:80px;">手机号码</li>
+			<li style="width:60px;">响应等级</li>
+			<li style="width:70px;">分派营销员</li>
+			<li style="width:60px;">联系情况</li>
+			<li style="width:120px;">约定日期</li>
+		</ul>
+	</div>
+	<div class="table_content_area" id="table_content_area"></div>
+</div>
+<div class="jSMBTit">
+	<!-- 全选 添加类名 控制样式jTitSelectBox -->
+	<!-- <span class="jSelectBox jTitSelectBox"><a class="jSelectedno" href="javascript:;"></a></span> -->
+	<ul style="padding-left:20px;">
+		<!-- <li class="jAllPitch">全选</li> -->
+		<li>共计<span id="total_record_number"></span></span>条记录</li>
+		<li><span id="page_no"></span>/<span id="total_page_number"></span></li>
+		<li class="jPageBtn">
+			<a href="javascript:;" id="previous_page" class="jPrevend"></a>
+			<a href="javascript:;" id="next_page" class="jNextend"></a>
+		</li>
+		<li class="jPageInput">
+			跳转至
+			<input type="text" id="pageNum" optional="true">
+			<input type="button" value="跳转" id="pageNumJump" class="jChooseFile">
+		</li>
+	</ul>
+</div>
+</body>
+<script src="../common/plugins/js-xlsx/xlsx.full.min.js"></script>
+<script src="../common/plugins/utils/utils.js"></script>
+<script>
+    $(function(){
+        var updateBtn = document.getElementById('updateTask')
+		var exportBtn = document.getElementById('export')
+        var printOutBtn = document.getElementById('printOut')
+		var listDeteleBtn = document.getElementById('listDetele')
+		var pageJumpInput = document.getElementById('pageNum')
+        var userInfo = JSON.parse(localStorage.getItem('userInfo'))
+		var pageJumpBtn = document.getElementById('pageNumJump')
+
+        pageInit()
+        updateBtn.onclick = updateData
+        exportBtn.onclick = exportExcel
+        printOutBtn.onclick = printOut
+        listDeteleBtn.onclick = listDelete
+        pageJumpBtn.onclick = pageJumpInInput
+		function pageInit() {
+            $(".dateInput").date_input();
+            var operatorName = document.getElementById('operatorName')
+			if (userInfo.role_id === 2) {
+                operatorName.setAttribute('disabled',true)
+			}
+        }
+
+        function updateData() {
+            var dataList = getItemData()
+            if (!dataList) return
+            var itemData = JSON.parse(dataList[0])
+            var api = $.dialog({
+                id: 'sportdg',
+                content: 'url:../taskManagement/mark.html',
+                width: 1100,
+				height: 600,
+                title: '修改任务',
+				data: itemData,
+				init: function () {
+                    $.dialog.list['sportdg'].content.setPageValue()
+                },
+                okVal: '保存',
+                ok: function () {
+                    $.dialog.list['sportdg'].content.setSendData(update)
+					return false
+                },
+                cancelVal: '关闭',
+                cancel: function () {}
+            });
+            function update(sendData) {
+                AjaxPost("/api/toms/task/update", function(data) {
+                    if (data.ret_code === '00000000') {
+                        alert("修改成功")
+                        api.close()
+                        query(pageNum)
+                    }
+                }, sendData);
+            }
+        }
+        function getItemData(type) {
+			var checkArr = document.getElementsByClassName('checkInput')
+			var dataArr = [];
+			for (var i = 0;i < checkArr.length;i++) {
+			    if(checkArr[i].checked){
+                    var hiddenInput = checkArr[i].parentNode.parentNode.getElementsByClassName('hiddenInput')[0];
+                    var itemData = hiddenInput.getAttribute('data-itemData')
+                    dataArr.push(itemData)
+				}
+			}
+            if (type === 'detele') {
+
+            } else {
+                if (dataArr.length > 1) {
+                    alert('仅支持单笔操作')
+                    return null
+                }
+            }
+            if (dataArr.length < 1) {
+                alert('请选择一笔数据')
+                return null
+            }
+			return dataArr
+        }
+        function exportExcel() {
+			var title = '`No,客户姓名,证件号码,卡号,账单日,最后还款日,可办理金额,最近办理时间,手机号码,响应等级,分派营销员,联系情况,约定日期\n`'
+            var exportData = getListData()
+			if(!exportData) return
+
+			utils.exportExcel({
+                jsonData: exportData,
+                title: title
+            })
+			function getListData() {
+			    var listInput = document.getElementsByClassName('checkInput')
+				var arr = []
+				for (var i=0;i<listInput.length;i++) {
+
+			        if(listInput[i].checked) {
+                        arr.push(listData[i])
+					}
+				}
+				console.log(arr)
+				if (arr.length<1) {
+					alert('请选择导出数据')
+			        return null
+				}
+                return arr
+            }
+        }
+        function printOut() {
+            var itemData = JSON.parse(getItemData())
+            if (!itemData) return
+            var api = $.dialog({
+                id: 'sportdg',
+                content: 'url:../taskManagement/printOut.html',
+                width: 600,
+                height: 400,
+                title: '修改任务',
+                data: itemData,
+                init: function () {
+                    $.dialog.list['sportdg'].content.setPageValue()
+                },
+                okVal: '打印',
+                ok: function () {
+                    $.dialog.list['sportdg'].content.printOut()
+                    return false
+                },
+                cancelVal: '关闭',
+                cancel: function () {}
+            });
+        }
+        function pageJumpInInput() {
+			var total_page_number = document.getElementById('total_page_number').innerHTML
+			var pageNum = pageJumpInput.value
+			if (0 < parseInt(pageNum) &&  parseInt(pageNum) <= parseInt(total_page_number)) {
+                query(pageNum)
+            } else {
+			    alert('请输入正确的页码')
+			}
+        }
+        function listDelete() {
+            if (!confirm('是否确认删除？')) return
+			var itemDataList = getItemData('detele')
+			var task_ids = []
+            if (!itemDataList) return
+
+            for (var i = 0; i < itemDataList.length; i++) {
+                task_ids.push(JSON.parse(itemDataList[i]).task_id)
+            }
+			var sendData = {
+                task_ids: task_ids
+			}
+            AjaxPost("/api/toms/task/delete", function(data) {
+                if (data.ret_code === '00000000') {
+                    alert("删除成功")
+                    query(pageNum)
+                }
+            }, sendData);
+        }
+
+    });
+</script>
+</html>

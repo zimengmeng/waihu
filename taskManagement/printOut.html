@@ -1,0 +1,194 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="../common/css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../common/plugins/poshytip/style.css" />
+    <link rel="stylesheet" type="text/css" href="../common/css/table.css" />
+    <style>
+        .jOperateBox{font-size: 14px;}
+
+        .jOperateBox .conditionBox{padding: 5px;}
+        .jOperateBox .conditionBox:after{content: '';display: block;clear: both;}
+        .jOperateBox table{width: 100%;text-align: center}
+        .jOperateBox table tr td{padding: 5px 0;}
+        .jOperateBox table tr td{border: 0.5px solid #eee;}
+        .jOperateBox table tr td:first-child{width: 20%;}
+        .jOperateBox table tr td:nth-child(2){ width:20%;}
+        .jOperateBox table tr td:nth-child(3){ width:20%;}
+        .jOperateBox table tr td:nth-child(4){ width:40%;}
+        .userinfoBox{text-align: right}
+    </style>
+    <script type="text/javascript" src="../common/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../common/plugins/dateInput/jquery.dateInput.js"></script>
+    <script type="text/javascript" src="../common/plugins/poshytip/jquery.poshytip.min.js"></script>
+    <script type="text/javascript" src="../common/plugins/validationPoshytip/validation.js"></script>
+    <script type="text/javascript" src="../common/plugins/validationPoshytip/validationConstants.js"></script>
+    <script type="text/javascript" src="../common/js/common.js"></script>
+</head>
+<body>
+<div class="jOperateBox">
+    <div class="conditionBox" id="contentBox">
+        <table>
+            <thead>
+            <tr>
+                <td colspan="4">中国建设银行 账单分期申请单</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>姓名</td>
+                <td>张三</td>
+                    <td rowspan="3">身份证号</td>
+                <td rowspan="3"></td>
+            </tr>
+            <tr>
+                <td>卡号</td>
+                <td>31231645161</td>
+            </tr>
+            <tr>
+                <td>分期金额</td>
+                <td>￥700:00</td>
+            </tr>
+            <tr>
+                <td>分期期数</td>
+                <td>￥700:00</td>
+                <td>手续费收取方式</td>
+                <td>￥700:00</td>
+            </tr>
+            <tr>
+                <td>每期手续费</td>
+                <td>￥700:00</td>
+                <td>手续费率</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>手续总额</td>
+                <td>￥700:00</td>
+                <td>手机号</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>分期金额</td>
+                <td>￥700:00</td>
+                <td>手续费收取方式</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>账单日</td>
+                <td>￥700:00</td>
+                <td>最后还款日</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>账单日</td>
+                <td colspan="3">请输入备注信息</td>
+            </tr>
+            </tbody>
+        </table>
+        <p class="userinfoBox">
+            营销员&nbsp;&nbsp; <span class="creadtedName">张三</span>
+            &nbsp;&nbsp;<span class="dateTime">2019-01-02 14:54:03</span>
+        </p>
+    </div>
+</div>
+<script src="../common/plugins/jsBarcode/JsBarcode.all.min.js"></script>
+<script>
+    $(".dateInput").date_input();
+    var api = frameElement.api
+    function printOut() {
+        window.print();
+    }
+    function setPageValue() {
+        var data = api.data
+        data.charging_method = data.charging_method === '01'?'一次性收取':'分期收取'
+        console.log(api.data)
+        //debugger
+
+        var templateDom = '<table><thead><tr><td colspan="4">中国建设银行 账单分期申请单</td></tr></thead>' +
+            '<tbody>' +
+            '<tr>' +
+            '<td>姓名</td><td>'+ data.name +'</td><td rowspan="3">身份证号</td>' +
+            '<td rowspan="3"><canvas id="canvascode"></canvas></td>' +'</tr>' +
+            '<tr>' +
+            '<td>卡号</td><td>'+ data.card_number +'</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td>分期金额</td><td>'+ (isNullOrEmpty(data.installment_amount)?'-':('￥' + data.installment_amount)) +'</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td>分期期数</td><td>'+ (isNullOrEmpty(data.installment_num)?'-':data.installment_num) +'</td>' +
+            '<td>手续费收取方式</td><td>'+data.charging_method +'</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td>每期手续费</td>' +
+            '<td>'+ (isNullOrEmpty(data.per_fee)?'-':('￥' + data.per_fee)) +'</td>' +
+            '<td>手续费率</td>' +
+            '<td>'+ (isNullOrEmpty(data.fee_rate)?'-':(data.fee_rate + '%')) +'</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td>手续总额</td>' +
+            '<td>'+ (isNullOrEmpty(data.all_fee)?'-':('￥' + data.all_fee)) +'</td>' +
+            '<td>手机号</td>' +
+            '<td>'+ data.mobile_number +'</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td>账单日</td>' +
+            '<td>'+ data.bill_date +'</td>' +
+            '<td>最后还款日</td>' +
+            '<td>'+ data.repayment_date +'</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td>备注</td>' +
+            '<td colspan="3">'+ data.remark +'</td>' +
+            '</tr>' +
+            '</tbody>' +
+            '</table>' +
+            '<p class="userinfoBox">' +
+            '营销员&nbsp;&nbsp; <span class="creadtedName">'+ data.operator_name +'</span>' +
+            '&nbsp;&nbsp;<span class="dateTime">'+getNowDate()+'</span>' +
+            '</p>'
+        console.log(templateDom)
+        var contentBox = document.getElementById('contentBox')
+        contentBox.innerHTML = templateDom
+        setBarCode(data.id_number)
+    }
+    function setBarCode(code) {
+        JsBarcode("#canvascode", code, {
+            height:70
+        })
+        //$('#canvascode').JsBarcode(data)
+    }
+    function getNowDate() {
+        var date = new Date();
+        var year = date.getFullYear();
+        var month = (date.getMonth()+1) + '';
+        if (month.length < 2) {
+            month = '0' + month;
+        }
+        var day = date.getDate() + '';
+        if (day.length < 2) {
+            day = '0' + day;
+        }
+        var hours = date.getHours() + '';
+        if (hours.length < 2) {
+            hours = '0' + hours;
+        }
+        var minutes = date.getMinutes() + '';
+        if (minutes.length < 2) {
+            minutes = '0' + minutes;
+        }
+        var seconds = date.getSeconds() + '';
+        if (seconds.length < 2) {
+            seconds = '0' + seconds;
+        }
+        var time = year+'-'+month+'-'+day+' '+hours+':'+minutes+':'+seconds;
+        return time;
+    }
+</script>
+</body>
+</html>

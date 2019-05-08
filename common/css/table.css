@@ -1,0 +1,37 @@
+﻿@CHARSET "UTF-8";
+
+.table_header_area{/* padding-right:10px; */font-size:14px;}
+.table_header_area{height:40px;overflow:hidden;}
+.table_header_area ul{/* padding-left:20px; */}
+.table_header_area ul li{float:left;min-height:40px;line-height:40px;border:0;color:#c10d1f;text-align:center;}
+/* .table_header_area ul li.jNumber{width:220px;}
+.table_header_area ul li.jUserName{width:190px;}
+.table_header_area ul li.jKind{width:150px;} */
+/* .table_header_area .jOrderList{min-height:40px;}
+.table_header_area .jOrderList li{min-height:40px;height:40px;line-height:40px;position:relative;overflow:hidden;border-top:1px solid #eaeaea;}
+.table_header_area .jOrderList li .jSelectBox{padding:12px 0 0 12px;margin-right:18px;}
+.table_header_area .jOrderList li .jClickArea{position:absolute;top:0;right:0;width:670px;height:40px;}
+.table_header_area .jOrderList li ul li{float:left;line-height:40px;border:0;}
+.table_header_area .jOrderList li ul li.jNumber{width:220px;}
+.table_header_area .jOrderList li ul li.jUserName{width:190px;}
+.table_header_area .jOrderList li ul li.jKind{width:150px;} */
+
+.table_content_area ul li a.jClickArea{margin-left: 35px;width:583px;height:40px;display:bolck;position:absolute;top:0;/*right:0;*/z-index:9;}
+.table_content_area{width:100%;}
+.table_content_area ul li{position:relative;border-top:1px solid #eaeaea;height:40px;z-index:2;}
+.table_content_area ul li .jSelectBox{padding:12px 10px 0 12px;}
+.table_content_area ul li ul{z-index:8;/* width:673px; */height:40px;float:left;}
+.table_content_area ul li ul li{float:left;border:none;font-size:14px;position:relative;z-index:2;line-height:40px;}
+.table_content_area ul li ul li.showText{text-align:center;white-space:nowrap;overflow: hidden;text-overflow:ellipsis;}
+.table_content_area ul li ul li.jRegiTime{float:right;width:150px;color:#aaa;}
+.table_content_area ul li ul li.jUserName{width:125px;}
+.table_content_area ul li ul li.jUserPhone{width:169px;}
+.table_content_area ul li ul li.jType{width:110px;}
+.table_content_area ul li ul li.jState{width:60px;}
+.table_content_area ul li ul li.jCheck{z-index:3;position:relative;width:673px;height:40px;top:-40px;left:80px;right:0;}
+.table_content_area ul li ul li.jCheck a{width:100%;height:100%;}
+.table_content_area ul li.jZanTing{background-color:#eaeaea;}
+.table_content_area ul li.jZanTing a.jClickArea{display:none;}
+.table_content_area ul li.jZanTing span.jZanTingIcon{display:block;position:absolute;width:69px;height:40px;right:230px;background:url("../images/zantingicon.png") no-repeat center center;}
+.table_content_area ul li.jZanTing .jSelectBox a.jSelectedno{width:16px;height:16px;cursor:default;background:url("../images/nocheckbg.png") no-repeat left center;}
+.table_content_area ul li.jLastLi{border:none;}

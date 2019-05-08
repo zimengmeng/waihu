@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="../common/css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../common/plugins/poshytip/style.css" />
+    <link rel="stylesheet" type="text/css" href="../common/css/table.css" />
+    <style>
+        .jOperateBox .conditionBox{
+            width:94%;
+        }
+        .mySeacherBox{
+            margin-top:5px;
+        }
+
+        .mySeacherBox label{
+            display: inline-block;
+            width: 100px;
+            text-align: right;
+        }
+        .mySeacherBox select{
+            width:calc(100% - 110px);
+        }
+        .mySeacherBox input{
+            width:calc(100% - 110px);height: 28px;
+        }
+        .btn{
+            width:100%;
+            height:50px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+        .btn input{
+            outline: none;
+        }
+    </style>
+    <script type="text/javascript" src="../common/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../common/plugins/dateInput/jquery.dateInput.js"></script>
+    <script type="text/javascript" src="../common/plugins/poshytip/jquery.poshytip.min.js"></script>
+    <script type="text/javascript" src="../common/plugins/validationPoshytip/validation.js"></script>
+    <script type="text/javascript" src="../common/plugins/validationPoshytip/validationConstants.js"></script>
+    <script type="text/javascript" src="../common/js/common.js"></script>
+    <script type="text/javascript" src="../common/plugins/jshash/md5-min.js"></script>
+
+</head>
+<body>
+<div class="jOperateBox">
+    <div class="conditionBox">
+        <div class="mySeacherBox">
+            <label><span style="color: red;">*</span>人员名称：</label>
+            <input optional="true" value="" id="name" type="text" name="name" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox" style="">
+            <label><span style="color: red;">*</span>所属部门：</label>
+            <select style="display: inline-block;" id="select1" onchange="queryGroup('select2',this);"></select>
+            <select style="display: none;margin-left: 105px;" id="select2" onchange="queryGroup('select3',this);"></select>
+            <select style="display: none;margin-left: 105px;" id="select3" onchange="queryGroup('none',this);"></select>
+        </div>
+        <div class="mySeacherBox">
+            <label><span style="color: red;">*</span>登录账户：</label>
+            <input optional="true" id="user_name" type="text" name="user_name" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label><span style="color: red;">*</span>密码：</label>
+            <input optional="true" id="password" type="password" name="password" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label><span style="color: red;">*</span>确认密码：</label>
+            <input optional="true" id="password_confirm" type="password" name="password_confirm" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox" style="">
+            <label><span style="color: red;">*</span>人员类型：</label>
+            <select id="operator_type">
+                <option value="01">经办员</option>
+                <option value="02">管理员</option>
+            </select>
+        </div>
+        <div class="mySeacherBox" style="">
+            <label><span style="color: red;">*</span>人员状态：</label>
+            <select id="status">
+                <option value="00">激活</option>
+                <option value="01">锁定</option>
+                <option value="02">删除</option>
+            </select>
+        </div>
+        <div class="mySeacherBox" style="">
+            <label><span style="color: red;">*</span>性别：</label>
+            <select id="gender">
+                <option value="M">男</option>
+                <option value="F">女</option>
+            </select>
+        </div>
+        <div class="mySeacherBox" style="">
+            <label><span style="color: red;">*</span>角色：</label>
+            <select id="role_id" onchange="role(this);"></select>
+        </div>
+        <div class="mySeacherBox">
+            <label>手机：</label>
+            <input optional="true" id="mobile_number" type="text" name="mobile_number" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label>座机：</label>
+            <input optional="true" id="telephone" type="text" name="telephone" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label>职务：</label>
+            <input optional="true" id="position" type="text" name="position" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label>邮箱：</label>
+            <input optional="true" id="email" type="text" name="email" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label>备注：</label>
+            <input optional="true" id="remark" type="text" name="remark" placeholder="" class="input_Style" />
+        </div>
+        <!--<div class="btn">-->
+        <!--<input type="button" value="保存" class="jChooseFile" />-->
+        <!--<input type="button" value="关闭" class="jChooseFile" />-->
+        <!--</div>-->
+    </div>
+</div>
+<script>
+    queryGroup('select1')//所属部门
+    role('role_id');//角色
+    var branch_id = {}
+    function setSendData(callback) {
+        callback && callback({
+            name: document.getElementById('name').value,
+            branch_id :  branch_id ,
+            user_name : document.getElementById("user_name").value,
+            password : hex_md5(document.getElementById("password").value),
+            password_confirm :hex_md5( document.getElementById("password_confirm").value),
+            operator_type : document.getElementById("operator_type").value,
+            status : document.getElementById("status").value,
+            gender : document.getElementById("gender").value,
+            role_id : document.getElementById("role_id").value,
+            mobile_number : document.getElementById("mobile_number").value||"",
+            telephone : document.getElementById("telephone").value||"",
+            position : document.getElementById("position").value||"",
+            email : document.getElementById("email").value||"",
+            remark : document.getElementById("remark").value||""
+        })
+    }
+    function role(level, ele) {
+        if (!ele) {
+            ele = {
+                value: '0'
+            }
+        } else if (ele.value === 'selects') {
+            return
+        }
+        var requestObj = {};
+        requestObj = {
+            branch_id: ele.value
+        }
+        AjaxPost("/api/toms/role/list", function (data) {
+            if (!isNullOrEmpty(data) && data.ret_code === "00000000") {
+                setSelectDoms(level, data.result)
+            } else {
+                if (typeof(data) === "object" && !isNullOrEmpty(data) && !isNullOrEmpty(data.ret_msg)) {
+                    document.getElementById("showErrorMsg").innerHTML = data.ret_msg;
+                } else {
+                    document.getElementById("showErrorMsg").innerHTML = "系统出现异常！";
+                }
+            }
+        }, requestObj, function (data) {
+            if (typeof(data) === "object" && !isNullOrEmpty(data) && !isNullOrEmpty(data.ret_msg)) {
+                document.getElementById("showErrorMsg").innerHTML = data.ret_msg;
+            } else {
+                document.getElementById("showErrorMsg").innerHTML = "系统出现异常！";
+            }
+
+        }, true, true);
+
+
+        function setSelectDoms(id, data) {
+            var str = '<option value="selects">请选择</option>';
+            var selectTupnts = document.getElementById(id)
+            for (var i = 0; i < data.length; i++) {
+                str += '<option value="' + data[i].role_id + '">' + data[i].name + '</option>'
+            }
+            selectTupnts.innerHTML = str;
+        }
+    }
+
+
+    function queryGroup(level, ele) {
+        if (!ele) {
+            ele = {
+                value: '0'
+            }
+        } else if (ele.value === 'cleanSelect') {
+            cleanSelect(level)
+            return
+        } else if(level === 'none') {
+            setSelectDom(level)
+            return
+        }
+        var requestObj = {};
+        requestObj = {
+            branch_id: ele.value
+        }
+        AjaxPost("/api/toms/branch/list", function (data) {
+            if (!isNullOrEmpty(data) && data.ret_code === "00000000") {
+                setSelectDom(level, data.result)
+            } else {
+                if (typeof(data) === "object" && !isNullOrEmpty(data) && !isNullOrEmpty(data.ret_msg)) {
+                    document.getElementById("showErrorMsg").innerHTML = data.ret_msg;
+                } else {
+                    document.getElementById("showErrorMsg").innerHTML = "系统出现异常！";
+                }
+            }
+        }, requestObj, function (data) {
+            if (typeof(data) === "object" && !isNullOrEmpty(data) && !isNullOrEmpty(data.ret_msg)) {
+                document.getElementById("showErrorMsg").innerHTML = data.ret_msg;
+            } else {
+                document.getElementById("showErrorMsg").innerHTML = "系统出现异常！";
+            }
+
+        }, true, true);
+
+        function setSelectDom(id, data) {
+            if(id === 'none') {
+                branch_id = document.getElementById('select3').value
+                return
+            }
+            var levelNum = parseInt(id.slice(-1))
+            if(id !== "select1"){
+                branch_id = document.getElementById(id.slice(0,-1)+ (levelNum - 1).toString()).value
+            }
+            console.log(branch_id)
+
+            if (id === "select1") {
+                var str = '<option value="cleanSelect">请选择</option>';
+                var selectTupnt = document.getElementById(id)
+                for (var i = 0; i < data.length; i++) {
+                    str += '<option value="' + data[i].branch_id + '">' + data[i].branch_name + '</option>'
+                }
+                selectTupnt.innerHTML = str;
+            } else if (id === "select2") {
+                document.getElementById("select2").style.display = "inline-block";
+                var str = '<option value="cleanSelect">请选择</option>';
+                var selectTupnt = document.getElementById(id)
+                for (var i = 0; i < data.length; i++) {
+                    str += '<option value="' + data[i].branch_id + '">' + data[i].branch_name + '</option>'
+                }
+                selectTupnt.innerHTML = str;
+            } else {
+                document.getElementById("select3").style.display = "inline-block";
+                var str = '<option value="cleanSelect">请选择</option>';
+                var selectTupnt = document.getElementById(id)
+                for (var i = 0; i < data.length; i++) {
+                    str += '<option value="' + data[i].branch_id + '">' + data[i].branch_name + '</option>'
+                }
+                selectTupnt.innerHTML = str;
+            }
+        }
+
+        function cleanSelect(id) {
+            if (id === "select2") {
+                document.getElementById("select2").style.display = "none";
+                document.getElementById("select3").style.display = "none";
+            } else {
+                document.getElementById("select3").style.display = "none";
+            }
+        }
+    }
+
+
+</script>
+</body>
+</html>

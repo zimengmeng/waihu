@@ -1,0 +1,352 @@
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <title>系统管理平台</title>
+    <link rel="stylesheet" type="text/css" href="../common/css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../common/plugins/poshytip/style.css" />
+    <link rel="stylesheet" type="text/css" href="../common/css/table.css" />
+    <style>
+        .jOperateBox .conditionBox:after{content: '';display: block;clear: both;}
+        .mySeacherBox{width:25%; float: left;margin-bottom: 6px;font-size: 14px;}
+        .mySeacherBox label{display: inline-block;width: 100px;text-align: right;}
+        .mySeacherBox select{width:calc(100% - 110px);outline: none;}
+        .mySeacherBox input{width:calc(100% - 110px);height: 28px;}
+        .jOperateBox .btnBox{text-align: center;margin-top:20px;border-bottom: 1px solid #ddd;margin-bottom:20px;height:41px;}
+        .jOperateBox .btnBox .jChooseFile:focus{outline: none;}
+        .table_header_area .myTable li{padding:0 5px;font-size: 12px;/*text-align: left;*/}
+        .tableBtnBox input[type=button]{width: 90px;}
+        #body .table_content_area li li{padding:0 5px;font-size: 12px;/*text-align: left;*/}
+    </style>
+    <script type="text/javascript" src="../common/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../common/plugins/lhgdialog/lhgdialog.min.js?skin=discuz"></script>
+    <script type="text/javascript" src="../common/plugins/dateInput/jquery.dateInput.js"></script>
+    <script type="text/javascript" src="../common/plugins/poshytip/jquery.poshytip.min.js"></script>
+    <script type="text/javascript" src="../common/plugins/validationPoshytip/validation.js"></script>
+    <script type="text/javascript" src="../common/plugins/validationPoshytip/validationConstants.js"></script>
+    <script type="text/javascript" src="../common/js/common.js"></script>
+    <script>
+        function pageLoadData() {
+            query();
+            distinct();
+        }
+        //渲染期数
+        function distinct(){
+            AjaxPost("/api/toms/rate/list/distinct",function(data){
+                for(var i in data.result){             
+                    $("#installment_num").append(`<option value=`+data.result[i]+`>`+data.result[i]+`</option>`)
+                }
+            })
+        }
+        //清空期数
+        function clearValue() {
+            installment_num=$("#installment_num").val("全部期数")
+        }
+        var listData = [];
+        var defaultListPageSize = 10;
+        function query(pageNo, pageSize) {
+            var requestObj = {
+                "page_no": pageNo ? pageNo : 1,
+                "page_size": pageSize ? pageSize : 10
+            };
+            AjaxPost("/api/toms/rate/list", function(data) {
+                document.getElementById("total_record_number").innerHTML = data.result.total_record_number;
+                document.getElementById("page_no").innerHTML = data.result.page_no;
+                document.getElementById("total_page_number").innerHTML = data.result.total_page_number;
+                if (data.result.has_previous_page) {
+                    $("#previous_page").attr("class", "jPrevBtn");
+                    $("#previous_page").attr("href", "javascript:query("+ data.result.pre_page_no + ", " + defaultListPageSize + ");");
+                } else {
+                    $("#previous_page").attr("class", "jPrevend");
+                    $("#previous_page").attr("href", "javascript:;");
+                }
+                if (data.result.has_next_page) {
+                    $("#next_page").attr("class", "jNextBtn");
+                    $("#next_page").attr("href", "javascript:query("+ data.result.next_page_no + ", " + defaultListPageSize + ");");
+                } else {
+                    $("#next_page").attr("class", "jNextend");
+                    $("#next_page").attr("href", "javascript:;");
+                }
+                var installment_num=$("#installment_num").val();
+                setListDom(data,installment_num);
+
+                $("#allCheck").click(function() {
+                    $("#table_content_area .check").prop("checked",$("#allCheck").prop("checked"));
+                })
+                $(".check").click(function() {
+                    var status = true
+                    if (!this.checked) {
+                        $("#allCheck").attr('checked',false)
+                    }
+                    $(".check").each(function () {
+                        if (!this.checked) {
+                            status = false
+                        }
+                    })
+                    if(status) {
+                        $("#allCheck").prop("checked",true)
+                    }
+                })
+                    //删除
+                $('#delete').click(function () {
+                    var arr=[];
+                    var obj={"rate_info_ids":arr};
+                    $('.check').each(function () {
+                        if(this.checked){
+                            arr.push(this.value)
+                        }
+                    })
+                    AjaxPost("/api/toms/rate/delete",function(obj){
+                        if (data.ret_code === '00000000') {
+                           confirm("是否删除？");
+                           location.reload();
+                    }
+                    }, obj)
+                })
+            }, requestObj);
+
+            function getInputValue(id) {
+                return document.getElementById(id).value
+            }
+        }
+        function setListDom(data,installment_num) {
+            document.getElementById("total_record_number").innerHTML = data.result.total_record_number;
+            document.getElementById("page_no").innerHTML = data.result.page_no;
+            document.getElementById("total_page_number").innerHTML = data.result.total_page_number;
+            var resultList = data.result.result_list;
+            var arr =[];
+            for(var i =0; i<resultList.length;i++){
+                if(installment_num==='全部期数'){
+                    arr.push(resultList[i])
+                } else if(resultList[i].installment_num==installment_num){
+                    arr.push(resultList[i])
+                }
+            }
+            if (data.result.has_previous_page) {
+                $("#previous_page").attr("class", "jPrevBtn");
+                $("#previous_page").attr("href", "javascript:query(" + data.result.pre_page_no + ", " + defaultListPageSize + ");");
+            } else {
+                $("#previous_page").attr("class", "jPrevend");
+                $("#previous_page").attr("href", "javascript:;");
+            }
+            if (data.result.has_next_page) {
+                $("#next_page").attr("class", "jNextBtn");
+                $("#next_page").attr("href", "javascript:query(" + data.result.next_page_no + ", " + defaultListPageSize + ");");
+            } else {
+                $("#next_page").attr("class", "jNextend");
+                $("#next_page").attr("href", "javascript:;");
+            }
+            var tableContent = "<ul>";
+            var pageListData = [];
+            for (var i = 0; i < arr.length; i++) {
+                var application = arr[i];
+                tableContent += "<li><ul>";
+                tableContent += "<li class=\"showText\" style=\"width:40px;\">" +parseInt(i+1) + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:16px;\"><input class='check checkInput' optional type='checkbox' value='" + detectionData(application.rate_info_id) + "'></li>";
+                tableContent += "<li class=\"showText\" style=\"width:60px;\">" + detectionData(application.installment_num) + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:130px;\">" + detectionData(application.fee_rate) + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:130px;\">" + detectionData(application.discount_rate) + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:130px;\">" + detectionData(application.discount_fee_rate) + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:130px;\">" + detectionData(application.amount_low) + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:130px;\">" + detectionData(application.amount_high) + "</li>";
+                tableContent += "<li><input class=\"hiddenInput\" type='hidden' data-itemData='"+ JSON.stringify(application) +"'></li>";
+                tableContent += "</li></ul>";
+                pageListData.push({
+                    no: (i+1),
+                    installment_num: detectionData(application.installment_num),
+                    fee_rate: detectionData(application.fee_rate),
+                    discount_rate: detectionData(application.discount_rate),
+                    discount_fee_rate: detectionData(application.discount_fee_rate),
+                    amount_low: detectionData(application.amount_low),
+                    amount_high: detectionData(application.amount_high)
+                })
+            }
+            tableContent += "</ul>";
+            listData = pageListData;
+            document.getElementById("table_content_area").innerHTML = tableContent;
+            adapt_iframeHeight();
+            utils.checkAll('allCheck','checkInput')
+            function detectionData(data) {
+                return isNullOrEmpty(data) ? "-" : data
+            }
+        }
+
+    </script>
+</head>
+
+<body onload="pageLoadData();" id="body">
+<!-- 筛选搜索 -->
+<div class="jOperateBox">
+    <div class="conditionBox">
+        <div class="mySeacherBox">
+            <label>期数：</label>
+            <select id="installment_num">
+                <option value="全部期数">全部期数</option>
+            </select>
+        </div>
+    </div>
+    <div class="btnBox">
+        <input type="button" value="查询" class="jChooseFile" onclick="query()"/>
+        <input type="button" value="重置" class="jChooseFile" onclick="clearValue()"/>
+    </div>
+    <div class="tableBtnBox">
+        <input type="button" id="add" value="新增" class="jChooseFile" />
+        <input type="button" value="修改" class="jChooseFile" id="update"/>
+        <input type="button" id="delete" value="删除" class="jChooseFile" />
+    </div>
+    <div class="table_box">
+        <div class="table_header_area">
+            <ul class="myTable">
+                <li style="width:40px;">No</li>
+                <li style="width:16px;"><input type="checkbox" id="allCheck"></li>
+                <li style="width:60px;">期数</li>
+                <li style="width:130px;">基准手续费率</li>
+                <li style="width:130px;">折扣率</li>
+                <li style="width:130px;">优惠手续费率</li>
+                <li style="width:130px;">折扣标准(低)</li>
+                <li style="width:130px;">折扣标准(高)</li>
+            </ul>
+        </div>
+        <div class="table_content_area" id="table_content_area"></div>
+    </div>
+    <div class="jSMBTit">
+        <!-- 全选 添加类名 控制样式jTitSelectBox -->
+        <!-- <span class="jSelectBox jTitSelectBox"><a class="jSelectedno" href="javascript:;"></a></span> -->
+        <ul style="padding-left:20px;">
+            <!-- <li class="jAllPitch">全选</li> -->
+            <li>共计<span id="total_record_number"></span></span>条记录</li>
+            <li><span id="page_no"></span>/<span id="total_page_number"></span></li>
+            <li class="jPageBtn">
+                <a href="javascript:;" id="previous_page" class="jPrevend"></a>
+                <a href="javascript:;" id="next_page" class="jNextend"></a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+</body>
+<script src="../common/plugins/js-xlsx/xlsx.core.min.js"></script>
+<script src="../common/plugins/utils/utils.js"></script>
+<script>
+    $(function(){
+        $(".dateInput").date_input();
+        var add = document.getElementById('add');
+        var update = document.getElementById('update');
+
+        add.onclick = adds;
+        update.onclick = updateDatas;
+
+        function adds() {
+            var api = $.dialog({
+                id:'sportdg',
+                content:'url:../rate/mark.html',
+                width:500,
+                height:300,
+                title:'新增费率',
+                button: [
+                    {
+                        name: '取消'
+                    },
+                    {
+                        name:'确定',
+                        callback :function (){
+                            $.dialog.list['sportdg'].content.setSendData(add)
+                        }
+                    }
+                ]
+            });
+            function add(data) {
+                AjaxPost("/api/toms/rate/create", function(data) {
+                    if (data.ret_code === '00000000') {
+                        alert("添加成功")
+                        history.go(0);
+                        query();
+                    }
+                }, data);
+            }
+        }
+
+        function updateDatas() {
+            var itemData = JSON.parse(getItemData())
+			if (!itemData) return
+            var api = $.dialog({
+                id: 'sportdg',
+                content: 'url:../rate/update.html',
+                width: 500,
+				height: 300,
+                title: '修改费率',
+				data: itemData,
+				init: function () {
+                    $.dialog.list['sportdg'].content.setPageValue()
+                },
+                okVal: '保存',
+                ok: function () {
+                    $.dialog.list['sportdg'].content.setSendData(update)
+					return false
+                },
+                cancelVal: '关闭',
+                cancel: function () {}
+            });
+            function update(data) {
+                AjaxPost("/api/toms/rate/update", function(data) {
+                    if (data.ret_code === '00000000') {
+                        alert("修改成功");
+                        api.close()
+                        query();
+                    }
+                }, data);
+            }
+        }
+        function getItemData() {
+			var checkArr = document.getElementsByClassName('checkInput')
+			var dataArr = [];
+			for (var i = 0;i < checkArr.length;i++) {
+			    if(checkArr[i].checked){
+                    var hiddenInput = checkArr[i].parentNode.parentNode.getElementsByClassName('hiddenInput')[0];
+                    var itemData = hiddenInput.getAttribute('data-itemData')
+                    dataArr.push(itemData)
+				}
+			}
+			if(dataArr.length>1){
+			    alert('仅支持单笔修改')
+			    return null
+			}else if (dataArr.length<1) {
+                alert('请选择一笔数据')
+                return null
+			}
+			return dataArr[0]
+        }
+
+        function exportExcel() {
+			var title = '`No,期数,基准手续费率,折扣率,优惠手续费率,折扣标准(低),折扣标准(高)\n`'
+            var exportData = getListData()
+			if(!exportData) return
+
+			utils.exportExcel({
+                jsonData: exportData,
+                title: title
+            })
+
+			function getListData() {
+			    var listInput = document.getElementsByClassName('checkInput')
+				console.log(listInput)
+                debugger
+				var arr = []
+				for (var i=0;i<listInput.length;i++) {
+
+			        if(listInput[i].checked) {
+                        arr.push(listData[i])
+					}
+				}
+				console.log(arr)
+				if (arr.length<1) {
+					alert('请选择导出数据')
+			        return null
+				}
+                return arr
+            }
+        }
+    });
+</script>
+</html>

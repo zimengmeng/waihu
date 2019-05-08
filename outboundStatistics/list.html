@@ -1,0 +1,284 @@
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<title>系统管理平台</title>
+	<link rel="stylesheet" type="text/css" href="../common/css/common.css" />
+	<link rel="stylesheet" type="text/css" href="../common/plugins/poshytip/style.css" />
+	<link rel="stylesheet" type="text/css" href="../common/css/table.css" />
+	<style>
+		.jOperateBox .conditionBox:after{content: '';display: block;clear: both;}
+		.mySeacherBox{width:25%; float: left;margin-bottom: 6px;font-size: 14px;}
+		.mySeacherBox label{display: inline-block;width: 100px;text-align: right;}
+		.mySeacherBox select{width:calc(100% - 110px);}
+		.mySeacherBox input{width:calc(100% - 110px);height: 28px;}
+		.jOperateBox .btnBox{text-align: center;float: left;margin-left: 20px;}
+		.jOperateBox .btnBox:after{content: '';display: block;clear: both;}
+		.jOperateBox .btnBox input{width: 90px;}
+		.jOperateBox .btnBox .jChooseFile:focus{outline: none;}
+		#taskManagement .table_content_area,.table_header_area .myTable{width: 1400px;}
+		.table_header_area .myTable:after{content: '';display: block;clear: both;}
+		.table_header_area .myTable li{padding:0 5px;font-size: 12px;/*text-align: left;*/}
+		#taskManagement .table_content_area li li{padding:0 5px;font-size: 12px;/*text-align: left;*/}
+		#taskManagement .tableBox{width: 100%;overflow: auto}
+		#taskManagement .table_header_area,#taskManagement .table_content_area{overflow: visible;}
+	</style>
+	<script type="text/javascript" src="../common/js/jquery.min.js"></script>
+	<script type="text/javascript" src="../common/plugins/lhgdialog/lhgdialog.min.js?skin=discuz"></script>
+	<script type="text/javascript" src="../common/plugins/dateInput/jquery.dateInput.js"></script>
+	<script type="text/javascript" src="../common/plugins/poshytip/jquery.poshytip.min.js"></script>
+	<script type="text/javascript" src="../common/plugins/validationPoshytip/validation.js"></script>
+	<script type="text/javascript" src="../common/plugins/validationPoshytip/validationConstants.js"></script>
+	<script type="text/javascript" src="../common/js/common.js"></script>
+	<script>
+        function pageLoadData() {
+            // query();
+        }
+
+        var listData = [];
+        var defaultListPageSize = 10;
+        function query() {
+            var requestObj = {
+                "start_date": document.getElementById('start_date').value,
+                "end_date": document.getElementById('end_date').value,
+            };
+            AjaxPost("/api/toms/statistics/query", function(data) {
+                console.log(data.result.detail_list)
+                setListDom(data);
+                $("#allCheck").click(function() {
+                    $("#table_content_area .check").prop("checked",$("#allCheck").prop("checked"));
+                })
+                $(".check").click(function() {
+                    var status = true
+                    if (!this.checked) {
+                        $("#allCheck").attr('checked',false)
+                    }
+                    $(".check").each(function () {
+                        if (!this.checked) {
+                            status = false
+                        }
+                    })
+                    if(status) {
+                        $("#allCheck").prop("checked",true)
+                    }
+                })
+            }, requestObj);
+        }
+
+        function setListDom(data) {
+            var resultList = data.result.detail_list;
+            var listArr = []
+            var tableContent = "<ul>";
+            for (var i = 0; i < resultList.length; i++) {
+                var application = resultList[i];
+                tableContent += "<li><ul>";
+                tableContent += "<li class=\"showText\" style=\"width:40px;\">" +parseInt(i+1) + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:60px;\">" + detectionData(application.name) + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:55px;\">" + detectionData(application.outcall_count_num) + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:60px;\">" + detectionData(application.task_num) + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:60px;\">" + detectionData(application.valid_data_num) + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:70px;\">" + detectionData(application.valid_rate+'%') + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:60px;\">" + detectionData(application.agree_num) + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:60px;\">" + detectionData(application.refuse_num) + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:60px;\">" + detectionData(application.re_contact_num) + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:120px;\">" + detectionData(application.agree_of_valid_data_rate+'%') + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:90px;\">" + detectionData(application.agree_rate+'%') + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:70px;\">" + detectionData(application.no_answer_num) + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:60px;\">" + detectionData(application.dead_number_num) + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:60px;\">" + detectionData(application.repayment_completed_num) + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:60px;\">" + detectionData(application.invalid_data_num) + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:80px;\">" + detectionData(application.total_installment_amount) + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:70px;\">" + detectionData(application.total_installment_fee) + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:80px;\">" + detectionData(application.branch_name) + "</li>";
+                // tableContent += "<li class=\"showText\" style=\"width:100px;\">" + (isNullOrEmpty(application.last_edit_time) ? "-" : application.last_edit_time) + "</li>";
+                // tableContent += "<li class=\"showText\" style=\"width:116px;\">修改</li>";
+                tableContent += "</li></ul>";
+                listArr.push({
+					no: parseInt(i+1),
+                    name: detectionData(application.name),
+                    outcall_count_num: detectionData(application.outcall_count_num),
+                    task_num: detectionData(application.task_num),
+                    valid_data_num: detectionData(application.valid_data_num),
+                    valid_rate: detectionData(application.valid_rate+'%'),
+                    agree_num: detectionData(application.agree_num),
+                    refuse_num: detectionData(application.refuse_num),
+                    re_contact_num: detectionData(application.re_contact_num),
+                    agree_of_valid_data_rate: detectionData(application.agree_of_valid_data_rate+'%'),
+                    agree_rate: detectionData(application.agree_rate+'%'),
+                    no_answer_num: detectionData(application.no_answer_num),
+                    dead_number_num: detectionData(application.dead_number_num),
+                    repayment_completed_num: detectionData(application.repayment_completed_num),
+                    invalid_data_num: detectionData(application.invalid_data_num),
+                    total_installment_amount: detectionData(application.total_installment_amount),
+                    total_installment_fee: detectionData(application.total_installment_fee),
+                    branch_name: detectionData(application.branch_name),
+                })
+            }
+
+            tableContent += "</ul>";
+            document.getElementById("table_content_area").innerHTML = tableContent;
+
+
+
+            var tableContent = "<ul>";
+            if(data.result.detail_list.length>0) {
+                var application = data.result;
+                tableContent += "<li><ul>";
+                tableContent += "<li class=\"showText\" style=\"width:40px;\"></li>";
+                tableContent += "<li class=\"showText\" style=\"width:60px;\">总计</li>";
+                tableContent += "<li class=\"showText\" style=\"width:55px;\">" + application.all_outcall_count_num + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:60px;\">" + application.all_task_num  + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:60px;\">" + application.all_valid_data_num  + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:70px;\">" + application.all_valid_rate + "%</li>";
+                tableContent += "<li class=\"showText\" style=\"width:60px;\">" + application.all_agree_num + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:60px;\">" + application.all_refuse_num + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:60px;\">" + application.all_re_contact_num  + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:120px;\">" + application.all_agree_of_valid_data_rate  + "%</li>";
+                tableContent += "<li class=\"showText\" style=\"width:90px;\">" + application.all_agree_rate + "%</li>";
+                tableContent += "<li class=\"showText\" style=\"width:70px;\">" + application.all_no_answer_num  + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:60px;\">" + application.all_dead_number_num  + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:60px;\">" + application.all_repayment_completed_num  + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:60px;\">" + application.all_invalid_data_num + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:80px;\">" + application.all_total_installment_amount  + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:70px;\">" + application.all_total_installment_fee  + "</li>";
+                tableContent += "<li class=\"showText\" style=\"width:80px;\">总计</li>";
+                // tableContent += "<li class=\"showText\" style=\"width:100px;\">" + (isNullOrEmpty(application.last_edit_time) ? "-" : application.last_edit_time) + "</li>";
+                // tableContent += "<li class=\"showText\" style=\"width:116px;\">修改</li>";
+                tableContent += "</li></ul>";
+                listArr.push({
+					no: '',
+					name: '总计',
+                    all_outcall_count_num:application.all_outcall_count_num,
+                    all_task_num:application.all_task_num,
+                    all_valid_data_num: application.all_valid_data_num,
+                    all_valid_rate: application.all_valid_rate,
+                    all_agree_num: application.all_agree_num,
+                    all_refuse_num:application.all_refuse_num,
+                    all_re_contact_num:application.all_re_contact_num,
+                    all_agree_of_valid_data_rate: application.all_agree_of_valid_data_rate,
+                    all_agree_rate: application.all_agree_rate,
+                    all_no_answer_num: application.all_no_answer_num,
+                    all_dead_number_num:application.all_dead_number_num,
+                    all_repayment_completed_num:application.all_repayment_completed_num,
+                    all_invalid_data_num: application.all_invalid_data_num,
+                    all_total_installment_amount: application.all_total_installment_amount,
+                    all_total_installment_fee: application.all_total_installment_fee,
+					name2: '总计',
+				})
+            }
+            tableContent += "</ul>";
+            listData = listArr
+            document.getElementById("table_content_areas").innerHTML = tableContent;
+            adapt_iframeHeight();
+            function detectionData(data) {
+               return isNullOrEmpty(data) ? "-" : data
+            }
+        }
+	</script>
+</head>
+
+<body onload="pageLoadData();" id="taskManagement">
+<!-- 筛选搜索 -->
+<div class="jOperateBox" style="height:auto;">
+	<div class="conditionBox">
+		<div class="mySeacherBox">
+			<label>开始日期：</label>
+			<input optional="true" class="dateInput" id="start_date" type="text" name="" placeholder="" />
+		</div>
+		<div class="mySeacherBox">
+			<label>结束日期：</label>
+			<input optional="true" class="dateInput" id="end_date" type="text" name="" placeholder="" />
+		</div>
+		<div class="btnBox">
+			<input type="button" value="查询" class="jChooseFile" onclick="query()" />
+			<input type="button" value="导出" class="jChooseFile" id="exportExcel" />
+			<input type="button" value="刷新" class="jChooseFile" />
+		</div>
+	</div>
+
+</div>
+<div class="tableBox">
+	<div class="table_header_area">
+		<ul class="myTable">
+			<li style="width:40px;">No</li>
+			<li style="width:60px;">姓名</li>
+			<li style="width:55px;">总量呼出</li>
+			<li style="width:55px;">总任务量</li>
+			<li style="width:60px;">有效数据量</li>
+			<li style="width:70px;">有效率</li>
+			<li style="width:60px;">办理</li>
+			<li style="width:60px;">拒绝</li>
+			<li style="width:60px;">再联系</li>
+			<li style="width:120px;">同意办理占有效数据量</li>
+			<li style="width:90px;">同意办理占总量</li>
+			<li style="width:70px;">无人接听</li>
+			<li style="width:60px;">空号</li>
+			<li style="width:60px;">已还款</li>
+			<li style="width:60px;">不符合条件</li>
+			<li style="width:80px;">办理分期金额</li>
+			<li style="width:70px;">手续费汇总</li>
+			<li style="width:80px;">组别</li>
+		</ul>
+	</div>
+    <div class="table_content_area" id="table_content_area"></div>
+    <div class="table_content_area" id="table_content_areas"></div>
+
+</div>
+
+</body>
+<script src="../common/plugins/js-xlsx/xlsx.core.min.js"></script>
+<script src="../common/plugins/utils/utils.js"></script>
+<script>
+    $(function(){
+        // $('.dateInput').css('height','100%')
+		var exportExcelBtn = document.getElementById('exportExcel')
+        $(".dateInput").date_input();
+        exportExcelBtn.onclick = exportExcel2
+        function exportExcel2() {
+            var headerFirstLine = '账单分期呼出分析分析表2019-1-2至2019-1-15日报表,,,,,,,,,,,,,,,,\n序号,姓名,总呼出量,总任务量,有效数据量,有效率,有效数据,,,同意办理<br/>占有效率,同意办理<br/>占总量,无效数据,,,,办理分期金额,手续费汇总,组别\n,,,,,,办理,拒绝,再联系,,,无人接听,空号,已还款,不符合条件,,\n'
+            var headerSecondLine = '序号,姓名,总呼出量,总任务量,有效数据量,有效率,有效数据,,,同意办理占有效率,同意办理占总量,无效数据,,,,办理分期金额,手续费汇总,组别\n'
+            var headerThirdlyLine = ',,,,办理,拒绝,再联系,,,无人接听,空号,已还款,不符合条件,,\n'
+
+
+            var title = headerFirstLine
+            var merges = [
+                {  //合并第四行（C4）第三列到第五列
+                    s: {//s为开始
+                        c: 0,//开始列
+                        r: 0//开始取值范围
+                    },
+                    e: {//e结束
+                        c: 17,//结束列
+                        r: 0//结束范围
+                    }
+                },
+				{s: {c: 0,r: 1}, e: {c: 0,r: 2}},
+                {s: {c: 1,r: 1}, e: {c: 1,r: 2}},
+                {s: {c: 2,r: 1}, e: {c: 2,r: 2}},
+                {s: {c: 3,r: 1}, e: {c: 3,r: 2}},
+                {s: {c: 4,r: 1}, e: {c: 4,r: 2}},
+                {s: {c: 5,r: 1}, e: {c: 5,r: 2}},
+                {s: {c: 6,r: 1}, e: {c: 8,r: 1}},
+                {s: {c: 9,r: 1}, e: {c: 9,r: 2}},
+                {s: {c: 10,r: 1}, e: {c: 10,r: 2}},
+                {s: {c: 11,r: 1}, e: {c: 14,r: 1}},
+                {s: {c: 15,r: 1}, e: {c: 15,r: 2}},
+                {s: {c: 16,r: 1}, e: {c: 16,r: 2}},
+                {s: {c: 17,r: 1}, e: {c: 17,r: 2}}
+            ]
+			var cols = [
+			    {wpx: 45}, {wpx: 165}, {wpx: 45},
+				]
+            var exportData = listData
+            if(!exportData) return
+			debugger
+            utils.exportExcel({
+                jsonData: exportData,
+                title: title,
+                merges: merges
+            })
+        }
+    });
+</script>
+</html>

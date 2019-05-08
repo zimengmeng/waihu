@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="../common/css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../common/plugins/poshytip/style.css" />
+    <link rel="stylesheet" type="text/css" href="../common/css/table.css" />
+    <style>
+        .jOperateBox .conditionBox{
+            width:94%;
+        }
+        .mySeacherBox{
+            margin-top:5px;
+        }
+
+        .mySeacherBox label{
+            display: inline-block;
+            width: 150px;
+            text-align: right;
+        }
+        .mySeacherBox select{
+            width:calc(100% - 160px);
+        }
+        .mySeacherBox input{
+            width:calc(100% - 160px);height: 28px;
+        }
+        .btn{
+            width:100%;
+            height:50px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+        .btn input{
+            outline: none;
+        }
+    </style>
+    <script type="text/javascript" src="../common/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../common/plugins/dateInput/jquery.dateInput.js"></script>
+    <script type="text/javascript" src="../common/plugins/poshytip/jquery.poshytip.min.js"></script>
+    <script type="text/javascript" src="../common/plugins/validationPoshytip/validation.js"></script>
+    <script type="text/javascript" src="../common/plugins/validationPoshytip/validationConstants.js"></script>
+    <script type="text/javascript" src="../common/js/common.js"></script>
+    <script type="text/javascript" src="../common/plugins/jshash/md5-min.js"></script>
+
+</head>
+<body>
+<div class="jOperateBox">
+    <div class="conditionBox" id="conditionBox">
+        <!-- <div class="mySeacherBox">
+            <label>期数：</label>
+            <input optional="true" id="installment_num" type="text" name="installment_num" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label>基准手续费率：</label>
+            <input optional="true" id="fee_rate" type="text" name="fee_rate" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label>折扣率：</label>
+            <input optional="true" id="discount_rate" type="text" name="discount_rate" value="1" placeholder="1" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label>优惠手续费率：</label>
+            <input optional="true" id="discount_fee_rate" type="text" name="discount_fee_rate" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label>折扣标准(低)：</label>
+            <input optional="true" id="amount_low" type="text" name="amount_low" value="0" placeholder="0" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label>折扣标准(高)：</label>
+            <input optional="true" id="amount_high" type="text" name="amount_high" value="0" placeholder="0" class="input_Style" />
+        </div> -->
+    </div>
+</div>
+<!-- <script src="../common/plugins/jsBarcode/JsBarcode.all.min.js"></script> -->
+<script>
+   $(".dateInput").date_input();
+   var api = frameElement.api
+   var data = api.data
+    console.log(data)
+   function setPageValue(){
+    var templateDom=
+    `
+    <div class="mySeacherBox">
+            <label>期数：</label>
+            <input optional="true" disabled="true" id="installment_num" type="text" value=${data.installment_num} name="installment_num" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label>基准手续费率：</label>
+            <input optional="true" id="fee_rate" value=${data.fee_rate} type="text" name="fee_rate" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label>折扣率：</label>
+            <input optional="true" id="discount_rate" value=${data.discount_rate} type="text" name="discount_rate" value="1" placeholder="1" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label>优惠手续费率：</label>
+            <input optional="true" id="discount_fee_rate" value=${data.discount_fee_rate} type="text" name="discount_fee_rate" placeholder="" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label>折扣标准(低)：</label>
+            <input optional="true" id="amount_low" value=${data.amount_low} type="text" name="amount_low" value="0" placeholder="0" class="input_Style" />
+        </div>
+        <div class="mySeacherBox">
+            <label>折扣标准(高)：</label>
+            <input optional="true" id="amount_high" value=${data.amount_high} type="text" name="amount_high" value="0" placeholder="0" class="input_Style" />
+        </div>    
+    `;
+    var conditionBox = document.getElementById('conditionBox')
+        conditionBox.innerHTML = templateDom;
+   }
+
+
+   function setSendData(callback) {
+        var requestObj={
+            installment_num: document.getElementById('installment_num').value,
+            fee_rate :  document.getElementById('fee_rate').value,
+            discount_rate : document.getElementById("discount_rate").value,
+            discount_fee_rate: document.getElementById('discount_fee_rate').value,
+            amount_low :  document.getElementById('amount_low').value,
+            amount_high : document.getElementById("amount_high").value,
+            rate_info_id:data.rate_info_id
+        }
+        callback && callback(requestObj)
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<title>系统管理平台</title>
+<link rel="stylesheet" type="text/css" href="../common/css/common.css" />
+<link rel="stylesheet" type="text/css" href="../common/plugins/poshytip/style.css" />
+<link rel="stylesheet" type="text/css" href="../common/css/table.css" />
+<script type="text/javascript" src="../common/js/jquery.min.js"></script>
+<script type="text/javascript" src="../common/plugins/lhgdialog/lhgdialog.min.js?skin=discuz"></script>
+<script type="text/javascript" src="../common/plugins/poshytip/jquery.poshytip.min.js"></script>
+<script type="text/javascript" src="../common/plugins/validationPoshytip/validation.js"></script>
+<script type="text/javascript" src="../common/plugins/validationPoshytip/validationConstants.js"></script>
+<script type="text/javascript" src="../common/js/common.js"></script><script type="text/javascript" src="../common/plugins/dateInput/jquery.dateInput.js"></script>
+<script>
+	function createSubmit() {
+		if(!pageFieldsChecker()){
+			return;
+		}
+		var requestObj = {
+			name:document.getElementById("applicationName").value,
+			type:document.getElementById("applicationType").value
+		}
+
+		var platform = "";
+		for (var i = 1; i < 8; i ++) {
+			var checkboxEle = document.getElementById("platform" + i);
+			if (checkboxEle.checked) {
+				if (platform == "") {
+					platform += checkboxEle.value;
+				} else {
+					platform += "," + checkboxEle.value;
+				}
+			}
+		}
+		requestObj.platform = platform;
+		var description = document.getElementById("description").value;
+		if (description) {
+			requestObj.description = description;
+		}
+
+		AjaxPost("/api/piosp/application/create", function(data) {
+			alert(data.ret_msg);
+		}, requestObj);
+	}
+</script>
+</head>
+
+<body>
+	<div class="jSeveInf">
+		<div class="jSITit">
+			<ul>
+				<li class="jPitchOn" style="left: 439px;border-bottom: 6px solid #fff;font-size: 20px;border-bottom: 0px solid #c10d1f;">
+					<a href="javascript:;" style="border: 0;">添加产品</a><p style="font-size: 18px;color: red;"></p>
+				</li>
+			</ul>
+		</div>
+		<div class="jSICont">
+			<ul>
+				<li style="margin-top:18px;">
+					<div class="jBasicInfTit">产品名称：</div>
+					<input id="applicationName" type="text" name="applicationName" placeholder="" class="input_Style" />
+				</li>
+				<li>
+					<div class="jBasicInfTit">产品类型：</div>
+					<select id="applicationType">
+						<option value="01">App客户端</option>
+						<option value="02">公众号</option>
+						<option value="03">小程序</option>
+						<option value="04">微博</option>
+						<option value="05">H5应用</option>
+					</select>
+				</li>
+				<li>
+					<div class="jBasicInfTit">产品类型：</div>
+					<input name="applicationPlatform" type="checkbox" id="platform1" value="Android" />
+					<label name="applicationPlatform" for="platform1">Android平台</label><br />
+				</li>
+				<li>
+					<div class="jBasicInfTit"></div>
+					<input name="applicationPlatform" type="checkbox" id="platform2" value="iOS" />
+					<label name="applicationPlatform" for="platform2">iOS平台</label><br />
+				</li>
+				<li>
+					<div class="jBasicInfTit"></div>
+					<input name="applicationPlatform" type="checkbox" id="platform3" value="WeChat" />
+					<label name="applicationPlatform" for="platform3">微信</label><br />
+				</li>
+				<li>
+					<div class="jBasicInfTit"></div>
+					<input name="applicationPlatform" type="checkbox" id="platform4" value="QQ" />
+					<label name="applicationPlatform" for="platform4">QQ</label><br />
+				</li>
+				<li>
+					<div class="jBasicInfTit"></div>
+					<input name="applicationPlatform" type="checkbox" id="platform5" value="Alipay" />
+					<label name="applicationPlatform" for="platform5">支付宝</label><br />
+				</li>
+				<li>
+					<div class="jBasicInfTit"></div>
+					<input name="applicationPlatform" type="checkbox" id="platform6" value="Weibo" />
+					<label name="applicationPlatform" for="platform6">微博</label><br />
+				</li>
+				<li>
+					<div class="jBasicInfTit"></div>
+					<input name="applicationPlatform" type="checkbox" id="platform7" value="PC" />
+					<label name="applicationPlatform" for="platform7">PC</label><br />
+				</li>
+				<li>
+					<div class="jBasicInfTit">产品说明：</div>
+					<textarea id="description" name="description" rows="3" cols="44" placeholder="" optional="true"></textarea>
+				</li>
+			</ul>
+		</div>
+		<div class="jSICont">
+			<ul>
+				<li style="border: 0px; margin-left: 100px;" class="jSetBtnBox">
+					<input type="button" value="提交" class="jChooseFile" onclick="createSubmit();" />
+					<input type="button" value="返回" class="jChooseFile" />
+				</li>
+			</ul>
+		</div>
+	</div>
+</body>
+</html>
